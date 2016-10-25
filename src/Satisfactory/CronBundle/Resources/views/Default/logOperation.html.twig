@@ -1,0 +1,147 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>Détail d'un log d'une exécution d'un cron</h1>
+    </div>
+    <section ng-app="neuboard"  ng-controller="logOperationCtrl" id="main-content" class="animated fadeInRight">
+        <div class="row">
+            <div class="col-md-12">
+                <a href="{{ path('satisfactory_cron_log') }}">
+                    <button class="btn btn-info btn-xs" type="button">
+                        <i class="fa fa-arrow-left"></i> 
+                        Retour à la liste des logs
+                    </button> 
+                </a>
+            </div>
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">  
+                        <div class="col-md-12">Cron d'éxécution du traitement "{{ '{{ dealingName }}' }}"</div>
+                        <br><br>
+                        <div class="col-md-12">
+                            Lancement du traitement {{ '{{ isExecutedManually }}' }} - {{ '{{ dealing }}' }} le {{ '{{ dealingDate }}' }} 
+                            <br><br>
+                        </div>
+                        <div class="col-md-12">
+                            <b>Statut</b> : 
+                            <span ng-if="running == 0">
+                                Terminé
+                            </span>
+                            <span ng-if="running == 1">
+                                En cours
+                            </span>
+                            <span ng-if="running == 2">
+                                Annulé
+                            </span>
+                            <br>
+
+                            <b>Temps d'exécution</b> : {{ '{{ ecxecutionTime }}' }}<br>
+
+                            <b>Résultat</b> : 
+                            <span ng-if="running == 1">
+                                Ok
+                            </span>
+                            <span ng-if="running != 1">
+                                Erreur
+                            </span>
+                            <br>
+
+                            <b>Nombre de lignes en entrées</b> : {{ '{{ nbLineIn }}' }}<br>
+                            <br>
+
+                            <b>Nombre de lignes en sorties</b> : {{ '{{ nbLineOut }}' }}<br>
+                            <br>
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <br>
+                            <b>Détails des opérations exécutées :</b>
+                        </div>     
+                        <table  id="example" class="table table-striped table-bordered"  >
+                            <thead>
+                                <tr>
+                                    <th>Heure</th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('cronexecution')">
+                                            Temps exécution
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('operation')">
+                                            Id opération
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('operationName')">
+                                            Opération
+                                        </a>
+                                    </th>
+                                    <th>Statut</th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('nbLineOut')">
+                                            (N lignes traitées)
+                                        </a>
+                                    </th>
+                                    <th>Log</th>
+                                    <th>Lien vers fichier</th>
+
+                                </tr>
+                            </thead>   
+                            
+                            <tbody ng-repeat="val in logOperation">  
+                                <tr  ng-if="val.status == 'error'" style="color:red" >
+                                    <td>{{ '{{ val.beginAt }}' }}</td>
+                                    <td>{{ '{{ val.ecxecutionTime }}' }}</td>
+                                    <td>{{ '{{ val.operationId }}' }}</td>
+                                    <td>{{ '{{ val.operationName }}' }}</td>
+                                    <td>{{ '{{ val.status }}' }}</td>
+                                    <td>{{ '{{ val.nbLineOut }}' }}</td>
+                                    <td  ng-bind-html="val.log">
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr  ng-if="val.status == 'warning'" style="color:orange" >
+                                    <td>{{ '{{ val.beginAt }}' }}</td>
+                                    <td>{{ '{{ val.ecxecutionTime }}' }}</td>
+                                    <td>{{ '{{ val.operationId }}' }}</td>
+                                    <td>{{ '{{ val.operationName }}' }}</td>
+                                    <td>{{ '{{ val.status }}' }}</td>
+                                    <td>{{ '{{ val.nbLineOut }}' }}</td>
+                                    <td  ng-bind-html="val.log">
+                                    </td>
+                                    <td>
+                                        <a  href="{{ '{{ val.file }}' }}">
+                                            Télécharger
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr  ng-if="val.status == 'success'" >
+                                    <td>{{ '{{ val.beginAt }}' }}</td>
+                                    <td>{{ '{{ val.ecxecutionTime }}' }}</td>
+                                    <td>{{ '{{ val.operationId }}' }}</td>
+                                    <td>{{ '{{ val.operationName }}' }}</td>
+                                    <td>{{ '{{ val.status }}' }}</td>
+                                    <td>{{ '{{ val.nbLineOut }}' }}</td>
+                                    <td  ng-bind-html="val.log">
+                                    </td>
+                                    <td>
+                                        <a  href="{{ '{{ val.file }}' }}">
+                                            Télécharger
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>    
+                        </table>
+                        <div ng-if="logOperation.length == 0">
+                            Aucun élément sélectionné
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'SatisfactoryCronBundle:js:logOperation.js.twig'with {'cronexecution':id} %}                        
+{% endblock %}        

@@ -1,0 +1,29 @@
+user_index:
+    path:     /
+    defaults: { _controller: "SatisfactoryUserBundle:User:index" }
+    methods:  [GET, POST]
+    
+user_new:
+    path:     /new
+    defaults: { _controller: "SatisfactoryUserBundle:User:new" }
+    methods:  [GET, POST]
+
+user_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "SatisfactoryUserBundle:User:edit" }
+    methods:  [GET, POST]
+
+user_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "SatisfactoryUserBundle:User:delete" }
+    methods:  GET
+
+user_list_ajax:
+    path:     /ajax/user
+    defaults: { _controller: "SatisfactoryUserBundle:User:ajaxList" }
+    methods:  GET
+    
+user_register:
+    path:     /new
+    defaults: { _controller: "SatisfactoryRegistrationBundle:User:Register" }
+    methods:  [GET, POST]    

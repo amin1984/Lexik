@@ -1,0 +1,15 @@
+
+operation_entercorrespondence_new:
+    pattern:  /{id}/new
+    defaults: { _controller: "SatisfactoryOperationBundle:EnterCorrespondence:new" }
+    methods:  [GET, POST]
+    
+operation_entercorrespondence_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "SatisfactoryOperationBundle:EnterCorrespondence:edit" }
+    methods:  [GET, POST]
+    
+operation_entercorrespondence_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "SatisfactoryOperationBundle:EnterCorrespondence:delete" }
+    methods:  GET

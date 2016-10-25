@@ -1,0 +1,234 @@
+{% extends 'SatisfactorySettingBundle::layout.html.twig' %}
+
+{% block content %}
+    <body class="sharing-page" >
+        <section class="main-content-wrapper" ng-app="neuboard"  ng-controller="settingCtrl" id="form-operation" class="animated fadeInUp" >
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">  
+                            <div class="col-md-12">
+                                <h1> MODULE DE PARAMETRAGE DES ENQUETES LOCALES</h1><br>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="{{ path('setting_new') }}">
+                                    <button  class="btn btn-setting btn-lg floatleft">
+                                        <i class="fa fa-plus"></i> Créer un nouveau paramétrage
+                                    </button>
+                                </a>
+                            </div>
+
+                            <div class="col-md-4 col-md-push-1">
+                                <a href="{{ path('setting_generate_csv') }}">
+                                    <button  class="btn btn-setting btn-lg floatleft">
+                                        <i class="fa fa-upload"></i> Télécharger la liste des paramétrages (CSV)
+                                    </button>
+                                </a>
+                            </div> 
+                        </div> 
+                    </div>
+                </div></div>
+            <br>
+            {% if(connexion == 1) %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="col-md-12">
+                                    <h3 class="titleheader"> RECHERCHER UN PARAMETRAGE D'ENQUETE</h3><br>
+                                </div> 
+                                <div class="col-md-3">
+                                    <input  type="text" class="form-control" ng-change="inputSearch()" placeholder="Rechercher le nom d'un paramétrage" ng-model="inputValue" >
+                                </div>
+                                <div class="col-md-3">
+                                    <select  class="form-control col-md-6"  ng-model='agencyForm.type' ng-change="agencySearch()"  ng-options="option.id as option.name for option in agencys"> </select>  
+                                </div>
+                                <div class="col-md-3">
+                                    <select  class="form-control col-md-6"  ng-model='statusForm.type' ng-change="statusSearch()"  ng-options="option.value as option.type for option in status"> </select>   
+                                </div>      
+
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+            {% endif %} 
+            <br>
+            <section  id="main-content">
+                {% if(connexion == 1) %}   
+                    <div class="">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <table  id="example" class="table table-striped " datatable="" cellspacing="0" style="width:100%" >
+                                            <thead>
+                                                <tr>
+                                                    <th class="center" ng-init="count1=0" ng-click="count1=count1+1">
+                                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('name')">
+                                                            Nom du paramétrage
+                                                            <i ng-class="count1%2==0 ? 'fa fa-chevron-up' : 'fa fa-chevron-down' " ></i>
+                                                        </a>
+                                                    </th>
+                                                    <th class="center" >Enquête</th>
+                                                    <th class="center large" >Agences</th>
+                                                    <th class="center" >Créé par</th>
+                                                    <th class="center" ng-init="count3=1" ng-click="count3=count3+1">
+                                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('updatedAt')">
+                                                            Date dernière modification
+                                                            <i ng-class="count3%2==0 ? 'fa fa-chevron-up' : 'fa fa-chevron-down' " ></i>
+                                                        </a>
+                                                    </th>
+                                                    <th class="center" ng-init="count2=0" ng-click="count2=count2+1">
+                                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('status')">
+                                                            statut
+                                                            <i ng-class="count2%2==0 ? 'fa fa-chevron-up' : 'fa fa-chevron-down' " ></i>
+                                                        </a>
+                                                    </th>
+                                                    <th class="center small">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody ng-repeat="setting in settings">
+                                                <tr>
+                                                    <td>{{ '{{ setting.name }}' }}</td>
+                                                    <td>{{ '{{ setting.quest }}' }}</td>
+                                                    <td>
+                                                        <div ng-if="setting.agencys.length > 6"  > 
+                                                            <div ng-repeat="(key, agency) in setting.agencys"  > 
+                                                                <div ng-if="key < 6">  
+                                                                    <div class="col-md-4" ng-if="key%2 == 0" style="padding-right: 0"> 
+                                                                        {{ '{{ agency.name }}' }}
+                                                                    </div>
+                                                                    <div class="col-md-0" ng-if="key%2 != 0"></div>
+                                                                    <div class="col-md-4" ng-if="key%2 != 0" style="padding-right: 0"> 
+                                                                        {{ '{{ agency.name }}' }}<br>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12" > ... </div>
+                                                        </div>
+                                                        <div ng-if="setting.agencys.length <= 6"  >     
+                                                            <div ng-repeat="(key, agency) in setting.agencys"  > 
+                                                                <div class="col-md-5" ng-if="key%2 == 0"> 
+                                                                    {{ '{{ agency.name }}' }} 
+                                                                </div>
+                                                                <div class="col-md-0" ng-if="key%2 != 0"></div>
+                                                                <div class="col-md-5" ng-if="key%2 != 0"> 
+                                                                    {{ '{{ agency.name }}' }}<br>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        {{ '{{ setting.createdBy }}' }}
+                                                    </td>
+                                                    <td>{{ '{{ setting.updatedAt }}' }}</td>
+                                                    <td>{{ '{{ setting.status }}' }}</td>
+                                                    <td>
+                                                        <a title="Visualiser" href="{{ '{{ setting.pathShow }}' }}">
+                                                            <img src="{{ asset('assets/img/icone-visualiser.png') }}" alt="Visualiser" height="12" width="20" >
+                                                        </a>
+                                                        <a title="Editer" href="{{ '{{ setting.pathEdit }}' }}">
+                                                            <img src="{{ asset('assets/img/icone-modifier.png') }}" alt="Editer" height="20" width="20" >
+                                                        </a>
+                                                        <a title="Copier un paramétrage" href="{{ '{{ setting.pathCopy }}' }}">
+                                                            <img src="{{ asset('assets/img/icone-dupliquer.png') }}" alt="Copier un paramétrage" height="20" width="20" >
+                                                        </a> 
+                                                        <a href="">
+                                                            <img src="{{ asset('assets/img/icone-supprimer.png') }}" alt="Supprimer" height="20" width="20" data-target="#settingDelete{{ '{{ setting.id }}' }}" data-toggle="modal" >
+                                                        </a>
+                                                        <!-- settingDelete Modal -->
+                                                        <div  class="modal fade" id="settingDelete{{ '{{ setting.id }}' }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                                        <h4 class="modal-title" id="myModalLabel"> Suppression </h4>
+                                                                    </div>
+                                                                    <div class="modal-body-delete">
+                                                                        <br>
+
+                                                                        <div class="col-sm-12">
+                                                                            Êtes-vous sûr de vouloir supprimer ce paramètre ?
+                                                                        </div>
+                                                                        <br><br>
+                                                                        <div class="col-sm-12">
+                                                                            <a href="{{ '{{ setting.pathDelete }}' }}">
+                                                                                <button  type="button" class="btn btn-setting" >Oui</button>
+                                                                            </a>
+                                                                            <button type="button" class="btn btn-setting" data-dismiss="modal">Non</button>
+                                                                        </div>
+                                                                        <br><br><br>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>        
+                                                        <!-- End settingDelete Modal -->     
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        {# Display pagination #}           
+                                        <div  class="pagination" ng-if="pages > 1">
+                                            <span  ng-if="current != 1" class="previous" ng-click="selectedLastPage(current-1)">
+                                                <a href="">&lt;&lt;</a>
+                                            </span>
+
+                                            <span ng-repeat="(key, page) in range(1,pages)"  ng-class="(page == current) ? 'current' : ''" ng-click="selectedPage(page)">
+                                                <a href="">
+                                                    {{ '{{ page }}' }} 
+                                                </a>
+                                            </span>
+
+                                            <span ng-if="current != pages" class="next" ng-click="selectedNextPage(current+1)">
+                                                <a href="">&gt;&gt;</a>
+                                            </span> 
+                                        </div>
+                                        {# End display pagination #}   
+
+                                        <div ng-if="pages == 0">
+                                            Aucun élément sélectionné
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}  
+                    <!-- Authentification Error -->
+                    <div id="myModal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title" id="myModalLabel"> Connexion </h4>
+                                </div>
+                                <div class="modal-body-delete">
+                                    <br>
+
+                                    <div class="col-sm-12">
+                                        Désolé nous n'avons pas réussi à vous identifier.
+                                        Merci de contacter votre responsable en charge de projet satisfaction clients.
+                                    </div>
+                                    <br><br><br><br>
+                                </div>
+                                <div class="modal-footer center-block">
+                                    <div class="col-sm-12">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                                            Annuler
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>        
+                    <!-- End Authentification Error -->  
+                {% endif %}
+                </div>
+            </section>
+        </section>
+    </body>
+    {% include 'SatisfactorySettingBundle:js:setting.js.twig'with {'connexion': connexion} %}                        
+{% endblock %}               
+

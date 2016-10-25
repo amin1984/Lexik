@@ -1,0 +1,12 @@
+services:
+#    satisfactory_cron.example:
+#        class: Satisfactory\CronBundle\Example
+#        arguments: ["@service_id", "plain_value", %parameter%]
+parameters:
+  cronTmpDir: "uploads/cron/tmpfiles/"
+  cronArchiveDir: "files/archives/"
+  cronArchiveHost: "mila.celaneo.com"
+  cronArchiveLogin: "outilsatisfactory_files"
+  cronArchivePassword: "xRVlcBiD6KA1TdV"
+  cronArchivePort: "234"
+  cronArchiveSSL: "sftp"

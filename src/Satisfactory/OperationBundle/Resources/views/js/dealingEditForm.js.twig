@@ -1,0 +1,259 @@
+<script type="text/javascript">
+
+    var $collectionHolder;
+    // setup an "add a tag" link
+    var $addTagLink = $('<button title="Ajouter"  class="btn btn-primary notifcation"><i class="fa fa-plus"></i></button>');
+    var $newLinkLi = $('<li></li>').append($addTagLink);
+
+    jQuery(document).ready(function () {
+
+        // Get the ul that holds the collection of tags
+        $collectionHolder = $('ul.tags');
+
+        // add a delete link to all of the existing tag form li elements
+        $collectionHolder.find('li').each(function () {
+            addTagFormDeleteLink($(this));
+        });
+
+        // add the "add a tag" anchor and li to the tags ul
+        $collectionHolder.append($newLinkLi);
+
+        // count the current form inputs we have (e.g. 2), use that as the new
+        // index when inserting a new item (e.g. 2)
+        $collectionHolder.data('index',               {{ nbNotif }} +$collectionHolder.find(':input').length);
+
+        $addTagLink.on('click', function (e) {
+            // prevent the link from creating a "#" on the URL
+            e.preventDefault();
+
+            // add a new tag form (see next code block)
+            addTagForm($collectionHolder, $newLinkLi);
+        });
+    });
+
+    function addTagForm($collectionHolder, $newLinkLi) {
+        // Get the data-prototype explained earlier
+        var prototype = $collectionHolder.data('prototype');
+
+        // get the new index
+        var index = $collectionHolder.data('index');
+
+        // Replace '__name__' in the prototype's HTML to
+        // instead be a number based on how many items we have
+        var newForm = prototype.replace(/__name__/g, index);
+
+        // increase the index with one for the next item
+        $collectionHolder.data('index', index + 1);
+
+        // Display the form in the page in an li, before the "Add a tag" link li
+        var $newFormLi = $('<li></li>').append(newForm);
+        $newLinkLi.before($newFormLi);
+
+        // add a delete link to the new form
+        addTagFormDeleteLink($newFormLi, index);
+    }
+
+    function addTagFormDeleteLink($tagFormLi) {
+        var $removeFormA = $('<button title="Supprimer"   class="btn btn-primary"><i class="fa fa-times"></i></button>');
+        $tagFormLi.append($removeFormA);
+
+        $removeFormA.on('click', function (e) {
+            // prevent the link from creating a "#" on the URL
+            e.preventDefault();
+
+            // remove the li for the tag form
+            $tagFormLi.remove();
+            $('.delete-alert').remove();
+        });
+    }
+
+    function dealingFormCtrl($scope, $http) {
+
+        // Compressed file
+        if ('{{ form.isCompressed.vars.value }}' == 1 || '{{ form.compressionFile.vars.errors | length > 0 }}' || '{{ form.compressionFormat.vars.errors | length > 0 }}') {
+            $scope.type = 1;
+            $scope.show = true;
+            $scope.showWildcard = false;
+        } else {
+            $scope.type = 0;
+            $scope.show = false;
+            $scope.showWildcard = true;
+        }
+        $scope.typeValue = function (value) {
+            if (value == 1) {
+                $scope.show = true;
+                $scope.showWildcard = false;
+                if ('{{ form.compressionFile.vars.value }}' == 'O-T')
+                    $('#dealing_edit_compressionFile').attr('value','');
+            } else {
+                $scope.show = false;
+                $scope.showWildcard = true;
+                $scope.compressionFile = 'O-T';
+            }
+        };
+
+        $scope.notificationDelete = function (url) {
+            $http({
+                url: url,
+                method: "GET",
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $('#notification' + data.id).addClass('hidden');
+            });
+        };
+
+        //Hour:Minute  by not 10
+        for (var i = 0; i < 60; i++)
+        {
+            if ((i % 5) != 0)
+            {
+                $('#dealing_timeDay_minute option[value="' + i + '"]').remove();
+                $('#dealing_timeMonth_minute option[value="' + i + '"]').remove();
+            }
+        }
+
+        //Password
+        $('#dealing_password').val('{{dealing.password}}');
+
+        //Other button radio
+        $('#dealing_sepa_0').change(function () {
+            $('#other').addClass('hidden');
+            $('#dealing_other').val("other");
+        });
+        $('#dealing_sepa_1').change(function () {
+            $('#other').addClass('hidden');
+            $('#dealing_other').val("other");
+        });
+        $('#dealing_sepa_2').change(function () {
+            $('#other').addClass('hidden');
+            $('#dealing_other').val("other");
+        });
+        $('#dealing_sepa_3').change(function () {
+            $('#other').addClass('hidden');
+            $('#dealing_other').val("other");
+        });
+        $('#dealing_sepa_4').change(function () {
+            $('#other').removeClass('hidden');
+            $('#dealing_other').val("");
+        });
+        if ($('#dealing_sepa_4').is(':checked')) {
+            $('#other').removeClass('hidden');
+        }
+        ;
+
+        //File Header
+        $('#dealing_edit_isFileHeader').change(function () {
+            if ($(this).is(':checked')) {
+                $('#addFileHeader').removeClass('hidden');
+            } else {
+                $('#addFileHeader').addClass('hidden');
+            }
+        });
+        //If checked 
+        if ($('#dealing_edit_isFileHeader').is(':checked')) {
+            $('#addFileHeader').removeClass('hidden');
+        }
+
+        //Operations list (Drag & drop)
+        var operationsList = [];
+        var operationsList = [];
+    {% for operation in orderOperations %}
+            operationsList.push({
+                id: '{{ operation.id }}',
+                order: '{{ operation.orderItem }}',
+                text: '[{{ operation.type }}]-[{{ operation.description }}] ',
+                type: '{{ operation.type }}',
+                filtering: '{{ operation.filtering }}',
+                status: '{{ operation.status }}',
+                url: '{{ path('operation_operation_edit',{'id': operation.id }) }}',
+                operationDelete: '{{ path('operation_operation_delete',{'id': operation.id }) }}',
+                activate: '{{ path('operation_operation_activate',{'id': operation.id }) }}'
+            });
+    {% endfor %}
+
+            var ajaxOrderUrl = '{{ ajaxOrderUrl }}';
+            $scope.sortingLog = [];
+            $scope.sortableOptions = {
+                update: function (e, ui) {
+                    var logEntry = operationsList.map(function (i) {
+                        return i.id;
+                    }).join(', ');
+                    $scope.sortingLog.push('Update: ' + logEntry);
+                },
+                stop: function (e, ui) {
+                    // this callback has the changed model
+                    var logEntry = operationsList.map(function (i) {
+                        return i.id;
+                    }).join(',');
+                    $scope.sortingLog.push('Stop: ' + logEntry);
+
+                    $http({
+                        url: ajaxOrderUrl,
+                        method: "GET",
+                        params: {sortingLog: logEntry}
+                    }).success(function (data) {
+                        var operationsList = [];
+                        for (var item in data) {
+                            operationsList.push({
+                                id: data[item].id,
+                                order: data[item].order,
+                                text: data[item].text,
+                                type: data[item].type,
+                                filtering: data[item].filtering,
+                                status: data[item].status,
+                                url: data[item].url,
+                                activate: data[item].activate
+                            });
+                        }
+                    });
+                }
+            };
+
+            $scope.list = operationsList;
+
+
+        }
+
+        /********************* CODE POUR LE BOUTON "VERIFIER LE FICHIER CSV" ************************************/
+        (function ($) {
+            $(".verify-csv").click(function () {
+                $('.verifycsv-text').show();
+                $('.verify-csv').addClass('disabled');
+    {#            $('.dealing-submit').hide();#}
+                var message = "";
+                $.post(
+                        "{{ path('operation_dealing_verifycsv') }}",
+                        {data: $("#form-edit-dealing").serialize()})
+                        .success(function (data) {
+    {#                alert(data);#}
+                            var obj = jQuery.parseJSON(data);
+                            var error = false;
+                            $.each(obj, function (key, value) {
+                                if (value.status == "warning")
+                                    error = true;
+                                message += '<div class="alert alert-' + value.status + '">';
+                                message += value.message;
+                                message += '</div>';
+                            });
+                            if (error == false) {
+    {#                    $('.dealing-submit').show();#}
+                            }
+                            $('.verify-csv').removeClass('disabled');
+                            $('.verifycsv-text').hide();
+
+                            $('#verifycsv-message').html(message);
+                            $('#verifycsv').modal();
+                            $('#verifycsv').modal({keyboard: false});
+                            $('#verifycsv').modal('show');
+                        })
+                        .error(function (data) {
+                            $('.verify-csv').removeClass('disabled');
+    {#                $('.dealing-submit').hide();#}
+                        })
+                        ;
+            })
+        })(jQuery);
+
+        /********************* FIN CODE POUR LE BOUTON "VERIFIER LE FICHIER CSV" ************************************/
+
+</script>    

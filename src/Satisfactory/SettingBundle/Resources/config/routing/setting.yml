@@ -1,0 +1,49 @@
+setting_index:
+    path:     /
+    defaults: { _controller: "SatisfactorySettingBundle:Setting:index" }
+    methods:  GET
+    
+setting_search:
+    path:     /
+    defaults: { _controller: "SatisfactorySettingBundle:Setting:search" }
+    methods:  [GET, POST]  
+
+setting_show:
+    path:     /{id}/show
+    defaults: { _controller: "SatisfactorySettingBundle:Setting:show" }
+    methods:  GET
+
+setting_new:
+    path:     /new
+    defaults: { _controller: "SatisfactorySettingBundle:Setting:new" }
+    methods:  [GET, POST]
+
+setting_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "SatisfactorySettingBundle:Setting:edit" }
+    methods:  [GET, POST]
+
+setting_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "SatisfactorySettingBundle:Setting:delete" }
+    methods:  GET
+    
+setting_generate_csv:
+    path:     /generate/csv
+    defaults: { _controller: "SatisfactorySettingBundle:Setting:generateExcel" }
+    methods:  GET
+    
+setting_copy:
+    path:     /{id}/copy
+    defaults: { _controller: "SatisfactorySettingBundle:Setting:copy" }
+    methods:  [GET, POST]  
+    
+setting_application:
+    path:     /application
+    defaults: { _controller: "SatisfactorySettingBundle:Setting:application" }
+    methods:  [GET, POST]  
+    
+setting_ajax_list:
+    path:     /ajax/list
+    defaults: { _controller: "SatisfactorySettingBundle:Setting:ajaxList" }
+    methods:  GET    

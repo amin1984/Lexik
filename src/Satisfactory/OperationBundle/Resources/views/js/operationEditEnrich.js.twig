@@ -1,0 +1,629 @@
+<script type="text/javascript">
+    if ('{{ selectedId }}')
+        $("#operation_enrich_correspondance").val('{{ selectedId }}');
+    function operationEditEnrichCtrl($scope, $http, $timeout) {
+        //On load
+        var correspondance = $('#operation_enrich_correspondance').val();
+        $http({
+            url: '{{ path('operation_correspondance_columns_ajax') }}',
+            method: "GET",
+            params: {id: correspondance}
+
+        }).success(function (data) {
+            var myarray = [];
+            for (var i in data) {
+                if (data[i] == '{{ operation.targetColumn }}')
+                {
+                    $scope.firstItem = data[i];
+                } else {
+                    var item = {
+                        label: data[i]
+                    };
+                    myarray.push(item);
+                }
+            }
+            $scope.columns = data;
+            $scope.columnsData = myarray;
+        }).then(function () {
+            var myJSON = "";
+            $scope.load = 'hidden';
+            var message = $scope.columns;
+            var myarray = [];
+            for (var i in message) {
+
+                var item = {
+                    "id": message[i],
+                    "type": 'string',
+                    "operators": ['equal', 'not_equal', 'greater_or_equal',
+                        'less_or_equal', 'between', 'is_empty', 'is_not_empty',
+                        'begins_with','not_begins_with','ends_with','not_ends_with',
+                        'contains', 'not_contains'
+                    ]
+                };
+
+                myarray.push(item);
+            }
+            var myJSON = JSON.stringify(myarray);
+
+            //QueryBuilder Plugin
+            var options = {
+                allow_empty: false,
+                default_filter: message[0],
+                sort_filters: true,
+                display_empty_filter: false,
+                default_condition: 'AND',
+                optgroups: {
+                    core: {
+                        en: 'Core',
+                        fr: 'Coeur'
+                    }
+                },
+                plugins: {
+                    'bt-tooltip-errors': {delay: 100},
+                    'sortable': null,
+                    'filter-description': {mode: 'bootbox'},
+                    'bt-selectpicker': null,
+                    'unique-filter': true,
+                    'bt-checkbox': {color: 'primary'},
+                    'invert': null
+                },
+                lang: {
+                    "__locale": "French (fr)",
+                    "add_rule": "Ajouter une règle",
+                    "add_group": "Ajouter un groupe",
+                    "delete_rule": "Supprimer",
+                    "delete_group": "Supprimer",
+                    "conditions": {
+                        "AND": "ET",
+                        "OR": "OU"
+                    },
+                    "operators": {
+                        "equal": "Strictement égal à",
+                        "not_equal": "Différent de la valeur exacte",
+                        "in": "dans",
+                        "not_in": "pas dans",
+                        "less": "inférieur",
+                        "less_or_equal": "Inférieur ou égal à une valeur",
+                        "greater": "supérieur",
+                        "greater_or_equal": "Supérieur ou égal à une valeur",
+                        "between": "Compris entre 2 valeurs",
+                        "not_between": "n'est pas entre",
+                        "begins_with": "Commence par",
+                        "not_begins_with": "Ne commence pas par",
+                        "contains": "Contient",
+                        "not_contains": "Ne contient pas",
+                        "ends_with": "Se termine par",
+                        "not_ends_with": "ne finit pas par",
+                        "is_empty": "Valeur vide",
+                        "is_not_empty": "Valeur non vide",
+                        "is_null": "est nul",
+                        "is_not_null": "n'est pas nul"
+                    },
+                    "errors": {
+                        "no_filter": "Aucun filtre sélectionné",
+                        "empty_group": "Le groupe est vide",
+                        "radio_empty": "Pas de valeur selectionnée",
+                        "checkbox_empty": "Pas de valeur selectionnée",
+                        "select_empty": "Pas de valeur selectionnée",
+                        "string_empty": "Valeur vide",
+                        "string_exceed_min_length": "Doit contenir au moins {0} caractères",
+                        "string_exceed_max_length": "Ne doit pas contenir plus de {0} caractères",
+                        "string_invalid_format": "Format invalide ({0})",
+                        "number_nan": "N'est pas un nombre",
+                        "number_not_integer": "N'est pas un entier",
+                        "number_not_double": "N'est pas un nombre réel",
+                        "number_exceed_min": "Doit être plus grand que {0}",
+                        "number_exceed_max": "Doit être plus petit que {0}",
+                        "number_wrong_step": "Doit être un multiple de {0}",
+                        "datetime_empty": "Valeur vide",
+                        "datetime_invalid": "Fomat de date invalide ({0})",
+                        "datetime_exceed_min": "Doit être après {0}",
+                        "datetime_exceed_max": "Doit être avant {0}",
+                        "boolean_not_valid": "N'est pas un booléen",
+                        "operator_not_multiple": "L'opérateur {0} ne peut utiliser plusieurs valeurs"
+                    }
+                },
+                filters: angular.fromJson(myJSON)
+            };
+
+            // init
+            $('#builderCorresp').queryBuilder(options);
+
+            $('#builderCorresp').on('afterCreateRuleInput.queryBuilder', function (e, rule) {
+                if (rule.filter.plugin == 'selectize') {
+                    rule.$el.find('.rule-value-container').css('min-width', '200px')
+                            .find('.selectize-control').removeClass('form-control');
+                }
+
+            });
+
+        });
+
+        //On check correspondance
+        $("#operation_enrich_correspondance").change(function () {
+            correspondance = $(this).val();
+            $http({
+                url: '{{ path('operation_correspondance_columns_ajax') }}',
+                method: "GET",
+                params: {id: correspondance}
+
+            }).success(function (data) {
+                var myarray = [];
+                for (var i in data) {
+                    var isChecked = false;
+                    var item = {
+                        label: data[i],
+                        value: isChecked
+                    };
+                    myarray.push(item);
+                }
+                $scope.columns = data;
+                $scope.columnsData = myarray;
+            }).then(function () {
+                location.reload();
+                $('#jsonCorrespondence').val('');
+                // automatic reset
+                $('#builderCorresp').queryBuilder('reset');
+                $(".json-parsed").empty();
+                $(".sql-parsed").empty();
+            });
+        });
+
+        //QueryBuilder Plugin
+        $('[data-toggle="tooltip"]').tooltip();
+        var $b = $('#builder');
+        $scope.loader = 'show';
+        //$scope.save = 'hidden';
+        $scope.isWarning = 'hidden';
+        $scope.saveSuccess = 'hidden';
+
+        var manualColumns = '{{ operation.filterManualColumns|json_encode() }}';
+        if (manualColumns != "null") {
+            manualColumns = angular.fromJson(manualColumns);
+            var manualColumnsString = manualColumns.join(';');
+            $('#contentFilterManualColumns').val(manualColumnsString);
+        }
+
+        // File Columns
+        var getFileColumns = function () {
+            $http({
+                url: '{{ path('operation_dealing_getfilecolumns',{'id': dealingId }) }}',
+                method: "GET",
+                async: true,
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.data = data;
+            }).then(function () {
+                $scope.loader = 'hidden';
+                var object = $scope.data;
+                var status = object.status;
+                var message = object.message;
+                var myJSON = "";
+                if (status == 'warning')
+                {
+                    if (manualColumns != "null") {
+                        buildPlugin(manualColumns);
+                        $scope.isWarning = 'hide';
+                    }
+                    $scope.warning = object.message;
+                    $scope.isWarning = 'show';
+                    $('#filterManualColumns').modal({
+                        show: true
+                    });
+                    $('#insertFilterManualColumns').click(function () {
+                        var str = $('#contentFilterManualColumns').val();
+                        if (str == "" || str == null)
+                            alert("Veuillez insérer au moins un nom de colonne");
+                        else {
+                            str = str.split(";");
+                            manualColumns = [];
+                            for (var i in str)
+                                manualColumns.push($.trim(str[i]));
+                            buildPlugin(manualColumns);
+                            $scope.save = 'show';
+                            $scope.isWarning = 'hide';
+                            $('#filterManualColumns').modal('toggle');
+                            $.ajax({
+                                url: '{{ path('operation_operation__manualcolumns',{'id': operation.id}) }}',
+                                type: 'POST',
+                                data: {json: (manualColumns)}
+                            });
+                        }
+                    })
+
+                }
+                //JSON stack if success status
+                if (status == 'success')
+                {
+                    $scope.save = 'show';
+                    $scope.isWarning = 'hide';
+
+                    var myarray = [];
+                    for (var i in message) {
+
+                        var item = {
+                            "id": message[i],
+                            "type": 'string',
+                            "operators": ['equal', 'not_equal', 'begins_with', 'greater_or_equal', 'less_or_equal', 'between', 'is_empty', 'is_not_empty']
+                        };
+
+                        myarray.push(item);
+                    }
+                    myJSON = JSON.stringify(myarray);
+                    //QueryBuilder Plugin
+                    var options = {
+                        allow_empty: false,
+                        default_filter: message[0],
+                        sort_filters: true,
+                        display_empty_filter: false,
+                        default_condition: 'AND',
+                        optgroups: {
+                            core: {
+                                en: 'Core',
+                                fr: 'Coeur'
+                            }
+                        },
+                        plugins: {
+                            'bt-tooltip-errors': {delay: 100},
+                            'sortable': null,
+                            'filter-description': {mode: 'bootbox'},
+                            'bt-selectpicker': null,
+                            'unique-filter': true,
+                            'bt-checkbox': {color: 'primary'},
+                            'invert': null
+                        },
+                        lang: {
+                            "__locale": "French (fr)",
+                            "add_rule": "Ajouter une règle",
+                            "add_group": "Ajouter un groupe",
+                            "delete_rule": "Supprimer",
+                            "delete_group": "Supprimer",
+                            "conditions": {
+                                "AND": "ET",
+                                "OR": "OU"
+                            },
+                            "operators": {
+                                "equal": "Strictement égal à",
+                                "not_equal": "Différent de la valeur exacte",
+                                "in": "dans",
+                                "not_in": "pas dans",
+                                "less": "inférieur",
+                                "less_or_equal": "Inférieur ou égal à une valeur",
+                                "greater": "supérieur",
+                                "greater_or_equal": "Supérieur ou égal à une valeur",
+                                "between": "Compris entre 2 valeurs",
+                                "not_between": "n'est pas entre",
+                                "begins_with": "Egal à l'expression (wildcards)",
+                                "not_begins_with": "Ne commence pas par",
+                                "contains": "Contient",
+                                "not_contains": "Ne contient pas",
+                                "ends_with": "Se termine par",
+                                "not_ends_with": "ne finit pas par",
+                                "is_empty": "Valeur vide",
+                                "is_not_empty": "Valeur non vide",
+                                "is_null": "est nul",
+                                "is_not_null": "n'est pas nul"
+                            },
+                            "errors": {
+                                "no_filter": "Aucun filtre sélectionné",
+                                "empty_group": "Le groupe est vide",
+                                "radio_empty": "Pas de valeur selectionnée",
+                                "checkbox_empty": "Pas de valeur selectionnée",
+                                "select_empty": "Pas de valeur selectionnée",
+                                "string_empty": "Valeur vide",
+                                "string_exceed_min_length": "Doit contenir au moins {0} caractères",
+                                "string_exceed_max_length": "Ne doit pas contenir plus de {0} caractères",
+                                "string_invalid_format": "Format invalide ({0})",
+                                "number_nan": "N'est pas un nombre",
+                                "number_not_integer": "N'est pas un entier",
+                                "number_not_double": "N'est pas un nombre réel",
+                                "number_exceed_min": "Doit être plus grand que {0}",
+                                "number_exceed_max": "Doit être plus petit que {0}",
+                                "number_wrong_step": "Doit être un multiple de {0}",
+                                "datetime_empty": "Valeur vide",
+                                "datetime_invalid": "Fomat de date invalide ({0})",
+                                "datetime_exceed_min": "Doit être après {0}",
+                                "datetime_exceed_max": "Doit être avant {0}",
+                                "boolean_not_valid": "N'est pas un booléen",
+                                "operator_not_multiple": "L'opérateur {0} ne peut utiliser plusieurs valeurs"
+                            }
+                        },
+                        filters: angular.fromJson(myJSON)
+                    };
+
+                    // init
+                    $('#builder').queryBuilder(options);
+
+                    $('#builder').on('afterCreateRuleInput.queryBuilder', function (e, rule) {
+                        if (rule.filter.plugin == 'selectize') {
+                            rule.$el.find('.rule-value-container').css('min-width', '200px')
+                                    .find('.selectize-control').removeClass('form-control');
+                        }
+                    });
+
+                    $('#builderCorresp').queryBuilder(options);
+
+                    $('#builderCorresp').on('afterCreateRuleInput.queryBuilder', function (e, rule) {
+                        if (rule.filter.plugin == 'selectize') {
+                            rule.$el.find('.rule-value-container').css('min-width', '200px')
+                                    .find('.selectize-control').removeClass('form-control');
+                        }
+                    });
+
+                    // set rule
+                    var jsonString = '{{ operation.json }}';
+                    if (jsonString != "" && jsonString != null && jsonString != "{}")
+                    {
+                        var jsonobj = angular.fromJson(jsonString);
+                        $('#builder').queryBuilder('setRules', jsonobj);
+                    }
+                    var jsonCorrespondence = '{{ operation.jsonCorrespondence }}';
+                    {#var obj = angular.fromJson(jsonCorrespondence);
+                    if (obj.rules)
+                    {#}
+                        if (jsonCorrespondence != "" && jsonCorrespondence != null)
+                        {
+                            var jsonCorrespondenceObj = angular.fromJson(jsonCorrespondence);
+                            $('#builderCorresp').queryBuilder('setRulesFromMongo', jsonCorrespondenceObj);
+                        }
+{#                    }#}
+                    
+
+                    // reset builder
+                    $('.reset').on('click', function () {
+                        $('#builder').queryBuilder('reset');
+                        $('#result').addClass('hide').find('pre').empty();
+                        $scope.saveSuccess = 'hidden';
+                    });
+
+                }
+            });
+        };
+
+        $timeout(getFileColumns, 300);
+
+        // get rules
+        $('form').change('input', function () {
+            var json = JSON.stringify($('#builder').queryBuilder('getRules', {get_flags: true}),undefined, 2);
+            $('#result').removeClass('hide').find('pre').html(json);
+            $scope.json = json;
+            $('#json').val(json);
+            var jsonCorrespondence = JSON.stringify($('#builderCorresp').queryBuilder('getMongo'), undefined, 2);
+            $('#result').removeClass('hide').find('pre').html(json);
+            $scope.jsonCorrespondence = jsonCorrespondence;
+            $('#jsonCorrespondence').val(jsonCorrespondence);
+        });
+
+        $("button").on('click', function () {
+
+            var json = JSON.stringify($('#builder').queryBuilder('getRules', {get_flags: true}),undefined, 2);
+            $('#result').removeClass('hide').find('pre').html(json);
+            $scope.json = json;
+            $('#json').val(json);
+            var jsonCorrespondence = JSON.stringify($('#builderCorresp').queryBuilder('getMongo'), undefined, 2);
+            $('#result').removeClass('hide').find('pre').html(jsonCorrespondence);
+            $scope.jsonCorrespondence = jsonCorrespondence;
+            $('#jsonCorrespondence').val(jsonCorrespondence);
+        });
+
+
+        $('#correspondance').addClass('hidden');
+        $('#rule').addClass('hidden');
+
+        //First checked
+        if ($('#operation_enrich_enrichColumnNameRuleSource').val() == 'O-T')
+        {
+            $('#operation_enrich_enrichFilter_0').attr('checked', 'checked');
+            $('#operation_enrich_status').attr('checked', 'checked');
+        }
+
+        //On checked
+        $('#operation_enrich_enrichFilter_0').on("click", function () {
+            $('#correspondance').removeClass('hidden');
+            $('#rule').addClass('hidden');
+            if ($('#operation_enrich_enrichColumnName').val() == 'O-T')
+                $('#operation_enrich_enrichColumnName').val('');
+            if ($('#operation_enrich_enrichColumnNameSource').val() == 'O-T')
+                $('#operation_enrich_enrichColumnNameSource').val('');
+            if ($('#operation_enrich_enrichColumnNameRuleSource').val() == '')
+                $('#operation_enrich_enrichColumnNameRuleSource').val('O-T');
+            if ($('#operation_enrich_enrichRule').val() == '')
+                $('#operation_enrich_enrichRule').val('O-T');
+        });
+
+        $('#operation_enrich_enrichFilter_1').on("click", function () {
+            $('#correspondance').addClass('hidden');
+            $('#rule').removeClass('hidden');
+            if ($('#operation_enrich_enrichColumnNameRuleSource').val() == 'O-T')
+                $('#operation_enrich_enrichColumnNameRuleSource').val('');
+            if ($('#operation_enrich_enrichRule').val() == 'O-T')
+                $('#operation_enrich_enrichRule').val('');
+            if ($('#operation_enrich_enrichColumnName').val() == '')
+                $('#operation_enrich_enrichColumnName').val('O-T');
+            if ($('#operation_enrich_enrichColumnNameSource').val() == '')
+                $('#operation_enrich_enrichColumnNameSource').val('O-T');
+        });
+
+        //If checked 
+        if ($('#operation_enrich_enrichFilter_0').is(':checked'))
+        {
+            $('#correspondance').removeClass('hidden');
+            $('#rule').addClass('hidden');
+            if ($('#operation_enrich_enrichColumnName').val() == 'O-T')
+                $('#operation_enrich_enrichColumnName').val('');
+            if ($('#operation_enrich_enrichColumnNameSource').val() == 'O-T')
+                $('#operation_enrich_enrichColumnNameSource').val('');
+        }
+
+        if ($('#operation_enrich_enrichFilter_1').is(':checked'))
+        {
+            $('#correspondance').addClass('hidden');
+            $('#rule').removeClass('hidden');
+        }
+
+
+        /* nouveaux champs pour adapter le filtre */
+        //On checked
+        $('#operation_enrich_enrichValue_0').on("click", function () {
+            $('#operation_enrich_enrichEgal').removeClass('hidden');
+            $('#operation_enrich_enrichDifferent').addClass('hidden');
+            $('#operation_enrich_enrichSuperiorOrEgal').addClass('hidden');
+            $('#operation_enrich_enrichInferiorOrEgal').addClass('hidden');
+            $('#operation_enrich_enrichIncludingMin').addClass('hidden');
+            $('#operation_enrich_enrichIncludingMax').addClass('hidden');
+
+            if ($('#operation_enrich_enrichEgal').val() == 'O-T')
+                $('#operation_enrich_enrichEgal').val('');
+
+            if ($('#operation_enrich_enrichDifferent').val() == '')
+                $('#operation_enrich_enrichDifferent').val('O-T');
+
+            if ($('#operation_enrich_enrichSuperiorOrEgal').val() == '')
+                $('#operation_enrich_enrichSuperiorOrEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichInferiorOrEgal').val() == '')
+                $('#operation_enrich_enrichInferiorOrEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichIncludingMin').val() == '')
+                $('#operation_enrich_enrichIncludingMin').val('O-T');
+
+            if ($('#operation_enrich_enrichIncludingMax').val() == '')
+                $('#operation_enrich_enrichIncludingMax').val('O-T');
+        });
+
+        $('#operation_enrich_enrichValue_1').on("click", function () {
+            $('#operation_enrich_enrichEgal').addClass('hidden');
+            $('#operation_enrich_enrichDifferent').removeClass('hidden');
+            $('#operation_enrich_enrichSuperiorOrEgal').addClass('hidden');
+            $('#operation_enrich_enrichInferiorOrEgal').addClass('hidden');
+            $('#operation_enrich_enrichIncludingMin').addClass('hidden');
+            $('#operation_enrich_enrichIncludingMax').addClass('hidden');
+
+            if ($('#operation_enrich_enrichEgal').val() == '')
+                $('#operation_enrich_enrichEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichDifferent').val() == 'O-T')
+                $('#operation_enrich_enrichDifferent').val('');
+
+            if ($('#operation_enrich_enrichSuperiorOrEgal').val() == '')
+                $('#operation_enrich_enrichSuperiorOrEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichInferiorOrEgal').val() == '')
+                $('#operation_enrich_enrichInferiorOrEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichIncludingMin').val() == '')
+                $('#operation_enrich_enrichIncludingMin').val('O-T');
+
+            if ($('#operation_enrich_enrichIncludingMax').val() == '')
+                $('#operation_enrich_enrichIncludingMax').val('O-T');
+        });
+
+        $('#operation_enrich_enrichValue_2').on("click", function () {
+            $('#operation_enrich_enrichEgal').addClass('hidden');
+            $('#operation_enrich_enrichDifferent').addClass('hidden');
+            $('#operation_enrich_enrichSuperiorOrEgal').removeClass('hidden');
+            $('#operation_enrich_enrichInferiorOrEgal').addClass('hidden');
+            $('#operation_enrich_enrichIncludingMin').addClass('hidden');
+            $('#operation_enrich_enrichIncludingMax').addClass('hidden');
+
+            if ($('#operation_enrich_enrichEgal').val() == '')
+                $('#operation_enrich_enrichEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichDifferent').val() == '')
+                $('#operation_enrich_enrichDifferent').val('O-T');
+
+            if ($('#operation_enrich_enrichSuperiorOrEgal').val() == 'O-T')
+                $('#operation_enrich_enrichSuperiorOrEgal').val('');
+
+            if ($('#operation_enrich_enrichInferiorOrEgal').val() == '')
+                $('#operation_enrich_enrichInferiorOrEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichIncludingMin').val() == '')
+                $('#operation_enrich_enrichIncludingMin').val('O-T');
+
+            if ($('#operation_enrich_enrichIncludingMax').val() == '')
+                $('#operation_enrich_enrichIncludingMax').val('O-T');
+        });
+
+        $('#operation_enrich_enrichValue_3').on("click", function () {
+            $('#operation_enrich_enrichEgal').addClass('hidden');
+            $('#operation_enrich_enrichDifferent').addClass('hidden');
+            $('#operation_enrich_enrichSuperiorOrEgal').addClass('hidden');
+            $('#operation_enrich_enrichInferiorOrEgal').removeClass('hidden');
+            $('#operation_enrich_enrichIncludingMin').addClass('hidden');
+            $('#operation_enrich_enrichIncludingMax').addClass('hidden');
+
+            if ($('#operation_enrich_enrichEgal').val() == '')
+                $('#operation_enrich_enrichEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichDifferent').val() == '')
+                $('#operation_enrich_enrichDifferent').val('O-T');
+
+            if ($('#operation_enrich_enrichSuperiorOrEgal').val() == '')
+                $('#operation_enrich_enrichSuperiorOrEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichInferiorOrEgal').val() == 'O-T')
+                $('#operation_enrich_enrichInferiorOrEgal').val('');
+
+            if ($('#operation_enrich_enrichIncludingMin').val() == '')
+                $('#operation_enrich_enrichIncludingMin').val('O-T');
+
+            if ($('#operation_enrich_enrichIncludingMax').val() == '')
+                $('#operation_enrich_enrichIncludingMax').val('O-T');
+        });
+
+        $('#operation_enrich_enrichValue_4').on("click", function () {
+            $('#operation_enrich_enrichEgal').addClass('hidden');
+            $('#operation_enrich_enrichDifferent').addClass('hidden');
+            $('#operation_enrich_enrichSuperiorOrEgal').addClass('hidden');
+            $('#operation_enrich_enrichInferiorOrEgal').addClass('hidden');
+            $('#operation_enrich_enrichIncludingMin').removeClass('hidden');
+            $('#operation_enrich_enrichIncludingMax').removeClass('hidden');
+
+            if ($('#operation_enrich_enrichEgal').val() == '')
+                $('#operation_enrich_enrichEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichDifferent').val() == '')
+                $('#operation_enrich_enrichDifferent').val('O-T');
+
+            if ($('#operation_enrich_enrichSuperiorOrEgal').val() == '')
+                $('#operation_enrich_enrichSuperiorOrEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichInferiorOrEgal').val() == '')
+                $('#operation_enrich_enrichInferiorOrEgal').val('O-T');
+
+            if ($('#operation_enrich_enrichIncludingMin').val() == 'O-T')
+                $('#operation_enrich_enrichIncludingMin').val('');
+            if ($('#operation_enrich_enrichIncludingMax').val() == 'O-T')
+                $('#operation_enrich_enrichIncludingMax').val('');
+        });
+
+        //Empty name 
+        if ($("#operation_enrich_filterColumnName").val() == "O-T")
+            $("#operation_enrich_filterColumnName").attr("value", "");
+
+        //If checked 
+        if ($('#operation_enrich_enrichValue_0').is(':checked')) {
+            $('#operation_enrich_enrichEgal').removeClass('hidden');
+            if ($('#operation_enrich_enrichEgal').val() == 'O-T')
+                $('#operation_enrich_enrichEgal').val('');
+        }
+
+        if ($('#operation_enrich_enrichValue_1').is(':checked'))
+            $('#operation_enrich_enrichDifferent').removeClass('hidden');
+
+        if ($('#operation_enrich_enrichValue_2').is(':checked'))
+            $('#operation_enrich_enrichSuperiorOrEgal').removeClass('hidden');
+
+        if ($('#operation_enrich_enrichValue_3').is(':checked'))
+            $('#operation_enrich_enrichInferiorOrEgal').removeClass('hidden');
+
+        if ($('#operation_enrich_enrichValue_4').is(':checked'))
+        {
+            $('#operation_enrich_enrichIncludingMin').removeClass('hidden');
+            $('#operation_enrich_enrichIncludingMax').removeClass('hidden');
+        }
+    }
+
+
+</script>    

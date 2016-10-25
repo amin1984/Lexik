@@ -1,0 +1,70 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1> PARAMETRAGE DE L'OPERATION - DEDOUBLONNER </h1>
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard"  ng-controller="operationEditDuplicateCtrl" id="form-operation" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a href="{{ path('operation_dealing_edit',{'id': operation.dealing.id}) }}">
+                            <button type="button" class="btn btn-info btn-xs">
+                                <i class="fa fa-arrow-left"></i> 
+                                Retour à la page d'édition du traitement {{ operation.dealing.name }}
+                            </button> 
+                        </a>  
+                        <br>    
+                        {{ form_start(edit_form, {'method': 'post', 'action': path('operation_operation_edit',{'id': operation.id }), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <label class="col-sm-12 label-margin-bottom">
+                                 Descriptif court pour identifier l'opération :
+                            </label>
+                            <div class="col-sm-12 {% if (edit_form.description.vars.errors | length > 0) %} has-error {% endif %}">
+                                {{ form_widget(edit_form.description, { 'attr': {'class': 'form-control',} }) }}
+
+                                {% for error in edit_form.description.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <label class="col-sm-12">
+                                <br> Nom de la colonne à dédoublonner*
+                            </label>
+                            <div class="col-sm-12">
+                                {{ form_widget(edit_form.duplicateNameColumn, { 'attr': {'class': 'form-control'} }) }}
+                                {% for error in edit_form.duplicateNameColumn.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">
+                               Conserver: 
+                            </label>
+                            <div class="col-sm-11">
+                               {{ form_widget(edit_form.duplicateKeep, { 'attr': {'class': 'radio'} }) }}
+                            </div> 
+                            <div class="col-sm-12">
+                                <br> {{ form_widget(edit_form.status , { 'attr': {'class': '' } }) }}
+                                Actif
+                            </div>                             
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-0 col-sm-6">
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i> Sauver
+                                </button>
+                            </div>
+                        </div> 
+                        {{ form_end(edit_form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--main content end--> 
+    {% include 'SatisfactoryOperationBundle:js:operationEditDuplicate.js.twig' %}
+{% endblock %}

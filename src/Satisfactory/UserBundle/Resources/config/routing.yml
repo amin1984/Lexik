@@ -1,0 +1,4 @@
+satisfactory_user_user:
+    resource: "@SatisfactoryUserBundle/Resources/config/routing/user.yml"
+    prefix:   /user
+

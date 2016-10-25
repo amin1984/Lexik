@@ -1,0 +1,81 @@
+<div class="panel-heading" >
+    <h4 class="panel-title">
+        <a ng-init="count4=0" ng-click="count4=count4+1" data-toggle="collapse" data-parent="#accordion4" href="#collapseFour" class="collapsed">
+            Récurrence
+            <i ng-class="count4%2==0 ? 'fa fa-chevron-up' : 'fa fa-chevron-down' " class="floatright"></i>
+        </a>
+    </h4>
+</div>
+<div id="collapseFour" class="panel-collapse collapse {% if(form.dayOfMonth.vars.errors | length > 0) %} in {% endif %}">
+
+    <div class="panel-body">
+        Définir la récurrence d'exécution de ce traitement :
+        <div class="col-sm-12"> 
+            <br><br>
+            {{ form_widget(form.recurence.children[0] , { 'attr': {'class': '' } }) }}
+            {{ form.recurence.children[0].vars.label }}
+        </div>
+        <div class="col-sm-12 inline">
+            <ul>   
+                <label class="label-margin-header">
+                    {{ form_widget(form.recurence.children[1] , { 'attr': {'class': '' } }) }}
+                    {{ form.recurence.children[1].vars.label }}
+                </label><br><br>
+                <li>
+                    {{ form_widget(form.days, { 'attr': {'class': '' } }) }}
+                </li>
+            </ul>
+        </div>   
+        <label class="col-sm-2 control-label">
+            Heure:Minute 
+        </label>      
+        <div class="col-sm-2">  
+            {{ form_widget(form.timeDay, { 'attr': {'class': '' } }) }}
+        </div> 
+        <div class="col-sm-8">  
+            <br><br>
+        </div> 
+
+        <div class="col-sm-12 inline">
+            <ul>   
+                <label class="">
+                    {{ form_widget(form.recurence.children[2] , { 'attr': {'class': '' } }) }}
+                    {{ form.recurence.children[2].vars.label }}
+                </label>
+            </ul>
+        </div>  
+        <br>   
+        <label class="col-sm-2 control-label">
+            Tous les 
+        </label> 
+        <div class="col-sm-2">   
+            {{ form_widget(form.dayOfMonth, { 'attr': {'class': 'form-control' } }) }}
+            {% if(form.dayOfMonth.vars.errors) %}
+                {% for error in form.dayOfMonth.vars.errors %}
+                    <span class="alert alert-danger-form">[entre 01 et 31]</span>
+                {% endfor %}
+            {% endif %}  
+        </div> 
+        <label class="col-sm-2 control-label">
+            de chaque mois
+        </label> 
+        <div class="col-sm-8"> 
+            <br><br>
+        </div> 
+        <br><br>
+        <label class="col-sm-2 control-label">
+            Heure:Minute 
+        </label>      
+        <div class="col-sm-2">  
+            {{ form_widget(form.timeMonth, { 'attr': {'class': '' } }) }}
+        </div> 
+        <div class="col-sm-8">  
+            <br><br>
+        </div> 
+        <div class="col-sm-12"> 
+            <br><br>
+            {{ form_widget(form.recurence.children[3] , { 'attr': {'class': '' } }) }}
+            {{ form.recurence.children[3].vars.label }}
+        </div>
+    </div>
+</div>

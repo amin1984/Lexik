@@ -1,0 +1,273 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>LISTE DES TRAITEMENTS</h1>
+    </div>
+    <section ng-app="neuboard"  ng-controller="dealingCtrl" id="main-content" class="animated fadeInRight">
+        <div class="row">
+            <div class="col-md-12">
+                {% if app.session.flashBag.has('cron_manual_execute_error') %}
+                    <div class="alert alert-warning">
+                        {% for msg in app.session.flashBag.get('cron_manual_execute_error') %}
+                            {{ msg }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if app.session.flashBag.has('cron_manual_execute_success') %}
+                    <div class="alert alert-success">
+                        {% for msg in app.session.flashBag.get('cron_manual_execute_success') %}
+                            {{ msg }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a href="{{ path('operation_dealing_new') }}">
+                            <button  class="btn btn-primary btn-lg floatleft">
+                                <i class="fa fa-plus"></i> Créer un nouveau traitement
+                            </button>
+                        </a>
+                        <br><br><br>
+                        <label class="col-md-12">Rechercher un traitement :</label>
+                        {#<form action="{{ path('operation_dealing_index') }}" method="POST">#}  
+                        <div class="col-md-6">
+                            <input  type="text" class="form-control" ng-change="inputSearch()" ng-model="inputValue" >
+                        </div>
+                        <div class="col-md-12">&nbsp;</div>
+                        <div class="col-md-6">
+                            <select  class="form-control col-md-6"  ng-model='form.type' ng-change="clientSearch()"  ng-options="option.id as option.name for option in clients"> </select>  
+                        </div>
+                        <div class="col-md-12">&nbsp;</div>    
+                        {#<div class="col-md-6">
+                            <button  class="btn btn-primary btn-lg inline" ng-click="search()" >
+                                <i  class="fa fa-search"></i> Rechercher
+                            </button>
+                        </div> #}
+                        {#</form>#}           
+                        <table  id="example" class="table table-striped table-bordered" datatable="" cellspacing="0" >
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('id')">
+                                            Id
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('name')">
+                                            Nom
+                                        </a>
+                                    </th>
+                                    <th>Client</th>
+                                    <th>Opérations effectuées</th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('creatorName')">
+                                            Créé par
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('updatedAt')">
+                                            Modifié le
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('executedAt')">
+                                            Dernière exécution le
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0" >
+                                            Future exécution le
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('isActive')">
+                                            Actif
+                                        </a>
+                                    </th>
+                                    <th>Exécuter</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>   
+                            <tbody ng-repeat="val in data">
+                                <tr ng-if="val.id">
+                                    <td>{{ '{{ val.id }}' }}</td>
+                                    <td>{{ '{{ val.name }}' }}</td>
+                                    <td>{{ '{{ val.client }}' }}</td>
+                                    <td>
+                                        <b ng-repeat="op in val.operations | orderBy:'orderItem'">
+                                            <a  href="{{ '{{ op.pathOperation }}' }}">
+                                                {{ '{{ op.type | limitTo : 1 : 0 |uppercase }}' }} 
+                                            </a>
+                                            &nbsp;
+                                        </b>
+                                    </td>
+
+                                    <td>{{ '{{ val.creatorName }}' }}</td>
+                                    <td>{{ '{{ val.updatedAt  }}' }}</td>
+                                    <td>
+                                        {{ '{{ val.executedAt }}' }}
+                                        <div ng-if="val.executedStatus == 1"
+                                             <i  class="fa fa-check" style="color: green" title="Terminé avec succès"></i>
+                                        </div>
+                                        <div ng-if="val.executedStatus == 0 "
+                                             <i  class="fa fa-close" style="color: red" title="Terminé avec erreurs"></i>
+                                        </div>
+                                        <div ng-if=" val.executedStatus == null "
+                                             <i  class="fa fa-close" style="color: red" title="Terminé avec erreurs"></i>
+                                        </div>
+                                    </td>
+                                    <td>{{ '{{ val.lastExecution }}' }}</td>
+                                    <td>
+                                        <div ng-if="val.isActive == 1">
+                                            <a title="Désactiver" href="{{ '{{ val.pathActivate }}' }}">   
+                                                <button  class="btn btn-info" type="button" >
+                                                    <i  class="fa fa-check-circle"></i>
+                                                </button>
+                                            </a> 
+                                        </div>
+                                        <div ng-if="val.isActive == 0">
+                                            <a title="Activer" href="{{ '{{ val.pathActivate }}' }}">  
+                                                <button  class="btn btn-danger" type="button" >
+                                                    <i  class="fa fa-minus-circle"></i>
+                                                </button>
+                                            </a>    
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button title="Exécuter" class="btn btn-primary" type="button" data-target="#dealingExecute{{ '{{ val.id }}' }}" data-toggle="modal">
+                                            <i class="fa fa-play"></i>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <a title="Editer" href="{{ '{{ val.pathEdit }}' }}">
+                                            <button  class="btn btn-default" type="button" >
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                        </a>   
+                                        <button title="Dupliquer"  class="btn btn-primary" type="button" data-target="#dealingDuplicate{{ '{{ val.id }}' }}" data-toggle="modal">
+                                            <i class="fa fa-files-o"></i>
+                                        </button>    
+                                        <button title="Supprimer"  class="btn btn-default" type="button" data-target="#dealingDelete{{ '{{ val.id }}' }}" data-toggle="modal">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                        <!-- dealingDelete Modal -->
+                                        <div  class="modal fade" id="dealingDelete{{ '{{ val.id }}' }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title" id="myModalLabel"> Suppression </h4>
+                                                    </div>
+                                                    <div class="modal-body-delete">
+                                                        <br>
+
+                                                        <div class="col-sm-12">
+                                                            Êtes-vous sûr de vouloir supprimer ce traitement ?
+                                                        </div>
+                                                        <br><br>
+                                                        <div class="col-sm-12">
+                                                            <a href="{{ '{{ val.pathDelete }}' }}">
+                                                                <button  type="button" class="btn btn-primary" >Oui</button>
+                                                            </a>
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                                                        </div>
+
+                                                        <br><br><br>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>        
+                                        <!-- End dealingDelete Modal -->  
+                                        <!-- dealingDuplicate Modal -->
+                                        <div  class="modal fade" id="dealingDuplicate{{ '{{ val.id }}'}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title" id="myModalLabel"> Dupliquer ce traitement</h4>
+                                                    </div>
+                                                    <div class="modal-body-delete">
+                                                        <br>
+                                                        <div class="col-sm-12">
+                                                            Êtes-vous sûr de vouloir dupliquer ce traitement ?
+                                                        </div>
+                                                        <br><br>
+                                                        <div class="col-sm-12">
+                                                            <a href="{{ '{{ val.pathDuplicate }}' }}">
+                                                                <button  type="button" class="btn btn-primary" >Oui</button>
+                                                            </a>
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                                                        </div>
+                                                        <br><br><br>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>        
+                                        <!-- End dealingDuplicate Modal -->  
+                                        <!-- dealingExecute Modal -->
+                                        <div  class="modal fade" id="dealingExecute{{ '{{ val.id }}' }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title" id="myModalLabel"> Executer manuellement ce traitement </h4>
+                                                    </div>
+                                                    <div class="modal-body-delete">
+                                                        <br>
+                                                        <div class="col-sm-12">
+                                                            Êtes-vous sûr de vouloir exécuter ce traitement ?
+                                                        </div>
+                                                        <br><br>
+                                                        <div class="col-sm-12">
+                                                            <a href="{{ '{{ val.pathExecute }}' }}">
+                                                                <button  type="button" class="btn btn-primary" >Oui</button>
+                                                            </a>
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                                                        </div>
+                                                        <br><br><br>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </td>  
+                                </tr>
+                            </tbody> 
+                        </table>
+                        {# Display pagination #}           
+                        <div  class="pagination" ng-if="pages > 1">
+                            <span  ng-if="current != 1" class="previous" ng-click="selectedLastPage(current-1)">
+                                <a href="">&lt;&lt;</a>
+                            </span>
+
+                            <span ng-repeat="(key, page) in range(1,pages)"  ng-class="(page == current) ? 'current' : ''" ng-click="selectedPage(page)">
+                                <a href="">
+                                    {{ '{{ page }}' }} 
+                                </a>
+                            </span>
+
+                            <span ng-if="current != pages" class="next" ng-click="selectedNextPage(current+1)">
+                                <a href="">&gt;&gt;</a>
+                            </span> 
+                        </div>
+                        {# End display pagination #}   
+
+                        <div ng-if="pages == 0">
+                            Aucun élément sélectionné
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'SatisfactoryOperationBundle:js:dealing.js.twig'with{url:path('operation_dealing_order_ajax',{'page': 1})} %}                        
+{% endblock %}        

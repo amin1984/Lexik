@@ -1,0 +1,20 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <section  id="main-wrapper" class="theme-default">
+        <link rel="stylesheet" href="{{ asset("assets/bower_components/bootstrap/dist/css/bootstrap.min.css") }}" id="bt-theme">
+        <!-- Page wrapper -->
+        <header id="header" ng-include="{{ include('::header.html.twig') }}"></header>
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar sidebar-left" ng-include="{{ include('::menu.html.twig') }}"></aside>
+        <!-- Content wraper -->
+        <section class="main-content-wrapper">
+            {% block content %}
+
+            {% endblock %} 
+            <!-- Footer -->
+            <div ng-include="'views/footer.html'"></div>
+        </section>
+        <!-- /Content wraper-->
+    </section>
+{% endblock %}

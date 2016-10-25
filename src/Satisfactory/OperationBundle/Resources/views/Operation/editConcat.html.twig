@@ -1,0 +1,292 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>PARAMETRAGE DE L'OPERATION - CONCATENER DES FICHIERS SOURCES</h1>
+    </div>
+    <!--main content start-->
+    <section id="form-user" ng-app="neuboard" ng-controller="operationConcatCtrl" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a href="{{ path('operation_dealing_edit',{'id': operation.dealing.id}) }}">
+                            <button type="button" class="btn btn-info btn-xs">
+                                <i class="fa fa-arrow-left"></i> 
+                                Retour à la page d'édition du traitement  {{ operation.dealing.name }}  
+                            </button> 
+                        </a> 
+
+                        <!--Accordion Start-->
+                        <div class="panel-group accordion " id="accordion">
+                            {% for key,edit_form_concat in edit_form_concats %}
+                                <div class="panel panel-default" id="accordion{{ key }}">
+                                    <div class="panel-heading" >
+                                        <h4 class="panel-title">
+                                            <a ng-init="count1=0" ng-click="count1=count1+1" data-toggle="collapse" data-parent="#accordion{{ key }}" href="#collapse{{ key }}" class="collapsed">
+                                                <i ng-class="count1%2==0 ? 'fa fa-chevron-up' : 'fa fa-chevron-down' " ></i>
+                                                back-office - {{ edit_form_concat.concatFilename.vars.value }}
+
+                                            </a>
+                                            {% set id=edit_form_concat.vars.value.id %}
+                                            <a  title="Supprimer"  class="badge badge-info floatright" type="button" data-target="#deleteConcat{{ id }}" data-toggle="modal">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                             <span class="floatright">&nbsp;</span>  
+                                            {% if(edit_form_concat.status.vars.data) %}
+                                                <i class="fa fa-check-circle ng-scope floatright" ></i>
+                                            {% else %} 
+                                                <i class="fa fa-minus-circle ng-scope floatright" ></i>
+                                            {% endif %}     
+                                            <!-- Delete Modal -->
+                                            <div  class="modal fade" id="deleteConcat{{ id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                            <h4 class="modal-title" id="myModalLabel"> Suppression </h4>
+                                                        </div>
+                                                        <div class="modal-body-delete">
+                                                            <br>
+                                                            <div class="col-sm-12">
+                                                                Êtes-vous sûr de vouloir supprimer cette concaténation ?
+                                                            </div>
+                                                            <br><br>
+                                                            <div class="col-sm-12">
+                                                                <br>
+                                                                <a href="{{ path('operation_operation_delete_concat',{'operation': operation.id,'concat': edit_form_concat.vars.value.id}) }}" >
+                                                                    <button  type="button" class="btn btn-primary" >Oui</button>
+                                                                </a>
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>        
+                                            <!-- End Delete Modal --> 
+                                        </h4>
+                                    </div>
+                                    <div id="collapse{{ key }}" class="panel-collapse collapse ">
+                                        <div class="panel-body">
+                                            <div class="form-group">
+
+                                                {{ form_start(edit_form_concat, {'id': 'editForm','method': 'post', 'action': path('operation_operation_edit_concat',{'operation': operation.id,'id': edit_form_concat.vars.value.id }), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                                                <div class="col-sm-12 inline">
+                                                    {{ form_widget(edit_form_concat.status, { 'attr': {'class': ''} }) }} Actif
+                                                </div>
+                                                <div class="col-sm-12 inline">
+                                                    {{ form_widget(edit_form_concat.concatProtocol, { 'attr': {'class': 'radio'} }) }}
+                                                </div>
+                                                <div class="col-sm-6 {% if (edit_form_concat.concatHost.vars.errors | length > 0) %} has-error {% endif %}">
+                                                    <label class="label-margin-header">
+                                                        Hôte*
+                                                        {% for error in edit_form_concat.concatHost.vars.errors %}
+                                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                        {% endfor %}
+                                                    </label>
+                                                    {{ form_widget(edit_form_concat.concatHost, { 'attr': {'class': 'form-control','name':'concatHost'} }) }}
+
+                                                </div>  
+                                                <div class="col-sm-6 {% if (edit_form_concat.concatPort.vars.errors | length > 0) %} has-error {% endif %}">
+                                                    <label class="label-margin-header">
+                                                        Port*
+                                                        {% for error in edit_form_concat.concatPort.vars.errors %}
+                                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                        {% endfor %}
+                                                    </label>
+                                                    {{ form_widget(edit_form_concat.concatPort, { 'attr': {'class': 'form-control','name':'concatPort','type':'number'} }) }}
+                                                </div>
+                                                <div class="col-sm-6 {% if (edit_form_concat.concatLogin.vars.errors | length > 0) %} has-error {% endif %}">
+                                                    <label class="label-margin-header">
+                                                        Identifiant*
+                                                        {% for error in edit_form_concat.concatLogin.vars.errors %}
+                                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                        {% endfor %}
+                                                    </label>
+                                                    {{ form_widget(edit_form_concat.concatLogin, { 'attr': {'class': 'form-control','name':'concatLogin'} }) }}
+                                                </div>  
+                                                <div class="col-sm-6 {% if (edit_form_concat.concatPassword.vars.errors | length > 0) %} has-error {% endif %}">
+                                                    <label class="label-margin-header">
+                                                        Mot de passe*
+                                                        {% for error in edit_form_concat.concatPassword.vars.errors %}
+                                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                        {% endfor %}
+                                                    </label>
+                                                    {{ form_widget(edit_form_concat.concatPassword, { 'attr': {'class': 'form-control','name':'Password','value':edit_form_concat.concatPassword.vars.form.vars.data } }) }}
+                                                </div>
+
+                                                <div class="col-sm-4">
+                                                    <label class="label-margin-header">Sous-dossier</label> <small>(laisser vide si à la racine)</small>
+                                                    <div class="{% if (edit_form_concat.concatDirectory.vars.errors | length > 0) %} has-error {% endif %}" >
+                                                        {{ form_widget(edit_form_concat.concatDirectory, { 'attr': {'class': 'form-control','name':'concatDirectory'} }) }}
+                                                    </div>
+                                                    {% for error in edit_form_concat.concatDirectory.vars.errors %}
+                                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                    {% endfor %}
+
+                                                    <label class="label-margin-header">Nom fixe du fichier entrant à traiter avec l'extension*</label>
+                                                    <div class="{% if (edit_form_concat.concatFilename.vars.errors | length > 0) %} has-error {% endif %}" >
+                                                        {{ form_widget(edit_form_concat.concatFilename, { 'attr': {'class': 'form-control','name':'concatDirectory'} }) }}
+                                                    </div>
+                                                    {% for error in edit_form_concat.concatFilename.vars.errors %}
+                                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                    {% endfor %}
+                                                </div>
+
+                                                <div class="col-sm-12">
+                                                    <p class="help">
+                                                        Si le nom du fichier contient une date, il faut utiliser le lexique suivant :<br />
+                                                        --> La date est à inscrire entre crochets<br />
+                                                        --> AAAA remplace l'année sur 4 chiffres et AA sur 2 chiffres<br />
+                                                        --> MM remplace le mois sur 2 chiffres<br />
+                                                        --> JJ remplace le jour sur 2 chiffres<br />
+                                                        --> L'utilisation de séparateurs est possible, tel que / ; - ; . etc...<br />
+
+                                                        Pour la date du jour de l'exécution : [********]<br />
+                                                        --> Par exemple : [AAAAMMJJ] devient 20160603, [JJ/MM/AA] devient 03/06/16, [JJ-MM] devient 03-06<br />
+
+                                                        Pour la date calculée, antérieure ou future :<br />
+                                                        - L'opérateur "+" ou "-" permet de déterminer une date antérieure ou future, par exemple "date du jour + 2 jours"<br />
+                                                        Format à utiliser : [*******:J+X] ou [******:J-X]<br />
+                                                        - Le "X" est donc à remplacer par le nombre de jours en plus ou en moins.<br />
+                                                        --> Par exemple : [AAAAMMJJ:J+1] ou [JJ-MM-AAAA:J-3]<br />
+                                                    </p> 
+                                                </div> 
+                                                <div class="col-sm-offset-0 col-sm-6">
+                                                    <button  type="submit" class="btn btn-primary" >
+                                                        <i class="fa fa-save"></i> Modifier
+                                                    </button>
+                                                </div>
+
+                                                {{ form_end(edit_form_concat) }} 
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}                  
+                        </div>
+                        <!--Accordion end--> 
+
+                        {{ form_start(edit_form, {'method': 'post', 'action': path('operation_operation_edit',{'id': operation.id }), 'attr': {'id': 'newForm','class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+
+                        <div class="form-group">
+                            <br>
+                            <label class="col-sm-12 label-margin-bottom">
+                                Descriptif court pour identifier l'opération :
+                            </label>
+                            <div class="col-sm-6 {% if (edit_form_operation.description.vars.errors | length > 0) %} has-error {% endif %}">
+                                {{ form_widget(edit_form_operation.description, { 'attr': {'class': 'form-control'} }) }}
+
+                                {% for error in edit_form_operation.description.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                {{ form_widget(edit_form.status) }} Actif
+                            </div>
+                        </div>     
+
+                        Ajouter un nouveau fichier source à concaténer
+                        <div class="col-sm-12 inline">
+                            {{ form_widget(edit_form.concatProtocol, { 'attr': {'class': 'radio','id':'concatProtocol'} }) }}
+                        </div>
+                        <div class="col-sm-6 {% if (edit_form.concatHost.vars.errors | length > 0) %} has-error {% endif %}">
+                            <label class="label-margin-header">
+                                Hôte*
+                                {% for error in edit_form.concatHost.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </label>
+                            {{ form_widget(edit_form.concatHost, { 'attr': {'class': 'form-control','name':'concatHost'} }) }}
+
+                        </div>  
+                        <div class="col-sm-6 {% if (edit_form.concatPort.vars.errors | length > 0) %} has-error {% endif %}">
+                            <label class="label-margin-header">
+                                Port*
+                                {% for error in edit_form.concatPort.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </label>
+                            {{ form_widget(edit_form.concatPort, { 'attr': {'class': 'form-control','name':'concatPort','type':'number'} }) }}
+                        </div>
+                        <div class="col-sm-6 {% if (edit_form.concatLogin.vars.errors | length > 0) %} has-error {% endif %}">
+                            <label class="label-margin-header">
+                                Identifiant*
+                                {% for error in edit_form.concatLogin.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </label>
+                            {{ form_widget(edit_form.concatLogin, { 'attr': {'class': 'form-control','name':'concatLogin'} }) }}
+                        </div>  
+                        <div class="col-sm-6 {% if (edit_form.concatPassword.vars.errors | length > 0) %} has-error {% endif %}">
+                            <label class="label-margin-header">
+                                Mot de passe*
+                                {% for error in edit_form.concatPassword.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </label>
+                            {{ form_widget(edit_form.concatPassword, { 'attr': {'class': 'form-control','name':'Password'} }) }}
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label class="label-margin-header">Sous-dossier</label> <small>(laisser vide si à la racine)</small>
+                            <div class="{% if (edit_form.concatDirectory.vars.errors | length > 0) %} has-error {% endif %}" >
+                                {{ form_widget(edit_form.concatDirectory, { 'attr': {'class': 'form-control','name':'concatDirectory'} }) }}
+                            </div>
+                            {% for error in edit_form.concatDirectory.vars.errors %}
+                                <span class="alert alert-danger-form">{{ error.message }}</span>
+                            {% endfor %}
+
+                            <label class="label-margin-header">Nom fixe du fichier entrant à traiter avec l'extension*</label>
+                            <div class="{% if (edit_form.concatFilename.vars.errors | length > 0) %} has-error {% endif %}" >
+                                {{ form_widget(edit_form.concatFilename, { 'attr': {'class': 'form-control','name':'concatDirectory'} }) }}
+                            </div>
+                            {% for error in edit_form.concatFilename.vars.errors %}
+                                <span class="alert alert-danger-form">{{ error.message }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-sm-12">
+                            <p class="help">
+                                Si le nom du fichier contient une date, il faut utiliser le lexique suivant :<br />
+                                --> La date est à inscrire entre crochets<br />
+                                --> AAAA remplace l'année sur 4 chiffres et AA sur 2 chiffres<br />
+                                --> MM remplace le mois sur 2 chiffres<br />
+                                --> JJ remplace le jour sur 2 chiffres<br />
+                                --> L'utilisation de séparateurs est possible, tel que / ; - ; . etc...<br />
+
+                                Pour la date du jour de l'exécution : [********]<br />
+                                --> Par exemple : [AAAAMMJJ] devient 20160603, [JJ/MM/AA] devient 03/06/16, [JJ-MM] devient 03-06<br />
+
+                                Pour la date calculée, antérieure ou future :<br />
+                                - L'opérateur "+" ou "-" permet de déterminer une date antérieure ou future, par exemple "date du jour + 2 jours"<br />
+                                Format à utiliser : [*******:J+X] ou [******:J-X]<br />
+                                - Le "X" est donc à remplacer par le nombre de jours en plus ou en moins.<br />
+                                --> Par exemple : [AAAAMMJJ:J+1] ou [JJ-MM-AAAA:J-3]<br />
+                            </p> 
+                        </div> 
+                        <div class="col-sm-offset-0 col-sm-12">
+                            <button  type="submit" class="btn btn-primary" >
+                                <i class="fa fa-save"></i> Ajouter
+                            </button>
+                        </div>
+                        {{ form_end(edit_form) }}  
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>                  
+</section>
+
+{% include 'SatisfactoryOperationBundle:js:operationEditConcat.js.twig'%}
+{% endblock %}
+

@@ -1,0 +1,358 @@
+<script type="text/javascript">
+
+    function operationEditModifyCtrl() {
+
+        //First checked
+        if ($('#operation_modify_modifyNameColumnToRename').val() == 'O-T'
+                && $('#operation_modify_modifyNameColumnToSort').val() == 'O-T'
+                && $('#operation_modify_modifyNameColumnToAdded').val() == 'O-T'
+                && $('#operation_modify_columnToDelete').val() == 'O-T'
+                && $('#operation_modify_nameColumnPosition').val() == 'O-T'
+                && $('#operation_modify_nameColumnFormat').val() == 'O-T'
+                )
+        {
+            $('#operation_modify_modifyStructure_0').attr('checked', 'checked');
+            $('#operation_modify_status').attr('checked', 'checked');
+        }
+
+        //On checked
+        $('#operation_modify_modifyStructure_0').on("click", function () {
+            $('#modifyRename').removeClass('hidden');
+            $('#modifySort').addClass('hidden');
+            $('#modifyAdd').addClass('hidden');
+            $('#modifyDelete').addClass('hidden');
+            $('#modifyPosition').addClass('hidden');
+            $('#modifyFormat').addClass('hidden');
+            if ($('#operation_modify_modifyNameColumnToRename').val() == 'O-T')
+                $('#operation_modify_modifyNameColumnToRename').val('');
+            if ($('#operation_modify_modifyNameColumnRename').val() == 'O-T')
+                $('#operation_modify_modifyNameColumnRename').val('');
+
+            $('#operation_modify_modifyNameColumnToSort').val('O-T');
+            $('#operation_modify_modifyNameColumnToAdded').val('O-T');
+            $('#operation_modify_modifyNameColumnPosition').val('O-T');
+            $('#operation_modify_columnToDelete').val('O-T');
+            $('#operation_modify_nameColumnPosition').val('O-T');
+            $('#operation_modify_reorderColumnName').val('O-T');
+
+            $('#operation_modify_nameColumnFormat').val('O-T');
+            $('#operation_modify_countryCode').val(0);
+            $('#operation_modify_newFormat').val('O-T');
+            $('#operation_modify_sourceFormatDate').val('O-T');
+            $('#operation_modify_targetFormatDate').val('O-T');
+        });
+
+        $('#operation_modify_modifyStructure_1').on("click", function () {
+            $('#modifyRename').addClass('hidden');
+            $('#modifySort').removeClass('hidden');
+            $('#modifyAdd').addClass('hidden');
+            $('#modifyDelete').addClass('hidden');
+            $('#modifyPosition').addClass('hidden');
+            $('#modifyFormat').addClass('hidden');
+            $('#operation_modify_modifyNameColumnToRename').val('O-T');
+            $('#operation_modify_modifyNameColumnRename').val('O-T');
+            $('#operation_modify_modifyNameColumnToSort').val('');
+            $('#operation_modify_modifyNameColumnToAdded').val('O-T');
+            $('#operation_modify_modifyNameColumnPosition').val('O-T');
+            $('#operation_modify_columnToDelete').val('O-T');
+            $('#operation_modify_nameColumnPosition').val('O-T');
+            $('#operation_modify_reorderColumnName').val('O-T');
+
+            $('#operation_modify_nameColumnFormat').val('O-T');
+            $('#operation_modify_countryCode').val(0);
+            $('#operation_modify_newFormat').val('O-T');
+            $('#operation_modify_sourceFormatDate').val('O-T');
+            $('#operation_modify_targetFormatDate').val('O-T');
+        });
+
+        $('#operation_modify_modifyStructure_2').on("click", function () {
+            $('#modifyRename').addClass('hidden');
+            $('#modifySort').addClass('hidden');
+            $('#modifyAdd').removeClass('hidden');
+            $('#modifyDelete').addClass('hidden');
+            $('#modifyPosition').addClass('hidden');
+            $('#modifyFormat').addClass('hidden');
+            $('#operation_modify_modifyNameColumnToRename').val('O-T');
+            $('#operation_modify_modifyNameColumnRename').val('O-T');
+            $('#operation_modify_modifyNameColumnToSort').val('O-T');
+            $('#operation_modify_modifyNameColumnToAdded').val('');
+            $('#operation_modify_modifyNameColumnPosition').val('O-T');
+            if ($('#operation_modify_modifyNameColumnPosition').val() == 'O-T')
+            {
+                $('#operation_modify_modifyAddedPosition_0').attr('checked', 'checked');
+                $('#operation_modify_modifyNameColumnPosition').addClass('hidden');
+            }
+            $('#operation_modify_columnToDelete').val('O-T');
+            $('#operation_modify_nameColumnPosition').val('O-T');
+            $('#operation_modify_reorderColumnName').val('O-T');
+
+            $('#operation_modify_nameColumnFormat').val('O-T');
+            $('#operation_modify_countryCode').val(0);
+            $('#operation_modify_newFormat').val('O-T');
+            $('#operation_modify_sourceFormatDate').val('O-T');
+            $('#operation_modify_targetFormatDate').val('O-T');
+        });
+
+        $('#operation_modify_modifyStructure_3').on("click", function () {
+            $('#modifyRename').addClass('hidden');
+            $('#modifySort').addClass('hidden');
+            $('#modifyAdd').addClass('hidden');
+            $('#modifyDelete').removeClass('hidden');
+            $('#modifyPosition').addClass('hidden');
+            $('#modifyFormat').addClass('hidden');
+            $('#operation_modify_modifyNameColumnToRename').val('O-T');
+            $('#operation_modify_modifyNameColumnRename').val('O-T');
+            $('#operation_modify_modifyNameColumnToSort').val('O-T');
+            $('#operation_modify_modifyNameColumnToAdded').val('O-T');
+            $('#operation_modify_modifyNameColumnPosition').val('O-T');
+            $('#operation_modify_columnToDelete').val('');
+            $('#operation_modify_nameColumnPosition').val('O-T');
+            $('#operation_modify_reorderColumnName').val('O-T');
+
+            $('#operation_modify_nameColumnFormat').val('O-T');
+            $('#operation_modify_countryCode').val(0);
+            $('#operation_modify_newFormat').val('O-T');
+            $('#operation_modify_sourceFormatDate').val('O-T');
+            $('#operation_modify_targetFormatDate').val('O-T');
+        });
+
+        $('#operation_modify_modifyStructure_4').on("click", function () {
+            $('#modifyRename').addClass('hidden');
+            $('#modifySort').addClass('hidden');
+            $('#modifyAdd').addClass('hidden');
+            $('#modifyDelete').addClass('hidden');
+            $('#modifyPosition').removeClass('hidden');
+            $('#modifyFormat').addClass('hidden');
+            $('#operation_modify_modifyNameColumnToRename').val('O-T');
+            $('#operation_modify_modifyNameColumnRename').val('O-T');
+            $('#operation_modify_modifyNameColumnToSort').val('O-T');
+            $('#operation_modify_modifyNameColumnToAdded').val('O-T');
+            $('#operation_modify_modifyNameColumnPosition').val('O-T');
+            $('#operation_modify_modifyNameColumnPosition_error').addClass('hidden');
+            $('#operation_modify_columnToDelete').val('O-T');
+            $('#operation_modify_nameColumnPosition').val('');
+            $('#operation_modify_reorderColumnName').addClass('hidden');
+            $('#operation_modify_reorderPosition_0').attr('checked', 'checked');
+
+            $('#operation_modify_nameColumnFormat').val('O-T');
+            $('#operation_modify_countryCode').val(0);
+            $('#operation_modify_newFormat').val('O-T');
+            $('#operation_modify_sourceFormatDate').val('O-T');
+            $('#operation_modify_targetFormatDate').val('O-T');
+        });
+
+        $('#operation_modify_modifyAddedPosition_0').on("click", function () {
+            $('#operation_modify_modifyNameColumnPosition').addClass('hidden');
+            $('#operation_modify_modifyNameColumnPosition_error').addClass('hidden');
+            $('#operation_modify_modifyNameColumnPosition').val('O-T');
+        });
+
+        $('#operation_modify_modifyAddedPosition_1').on("click", function () {
+            $('#operation_modify_modifyNameColumnPosition').removeClass('hidden');
+            $('#operation_modify_modifyNameColumnPosition').val('');
+            $('#operation_modify_modifyNameColumnPosition_error').removeClass('hidden');
+        });
+
+        $('#operation_modify_reorderPosition_0').on("click", function () {
+            $('#operation_modify_reorderColumnName').addClass('hidden');
+            $('#operation_modify_reorderColumnName_error').addClass('hidden');
+            if ($('#operation_modify_reorderColumnName').val() == 'O-T')
+                $('#operation_modify_reorderColumnName').val('O-T');
+        });
+
+        $('#operation_modify_reorderPosition_1').on("click", function () {
+            $('#operation_modify_reorderColumnName').removeClass('hidden');
+            $('#operation_modify_reorderColumnName_error').removeClass('hidden');
+            $('#operation_modify_modifyNameColumnPosition').val('O-T');
+            $('#operation_modify_modifyNameColumnPosition_error').addClass('hidden');
+            if ($('#operation_modify_reorderColumnName').val() == 'O-T')
+                $('#operation_modify_reorderColumnName').val('');
+        });
+
+        $('#operation_modify_modifyStructure_5').on("click", function () {
+            $('#modifyRename').addClass('hidden');
+            $('#modifySort').addClass('hidden');
+            $('#modifyAdd').addClass('hidden');
+            $('#modifyDelete').addClass('hidden');
+            $('#modifyPosition').addClass('hidden');
+            $('#modifyFormat').removeClass('hidden');
+            $('#operation_modify_modifyNameColumnToRename').val('O-T');
+            $('#operation_modify_modifyNameColumnRename').val('O-T');
+            $('#operation_modify_modifyNameColumnToSort').val('O-T');
+            $('#operation_modify_modifyNameColumnToAdded').val('O-T');
+            $('#operation_modify_modifyNameColumnPosition').val('O-T');
+            $('#operation_modify_columnToDelete').val('O-T');
+            $('#operation_modify_nameColumnPosition').val('O-T');
+            $('#operation_modify_reorderColumnName').val('O-T');
+
+            //if ($('#operation_modify_nameColumnFormat').val() == 'O-T')
+            $('#operation_modify_nameColumnFormat').val('');
+            if ($('#operation_modify_countryCode').val() == 0)
+                $('#operation_modify_countryCode').val('');
+
+            $("#operation_modify_targetFormatPhone_0").attr('checked', 'checked');
+
+        });
+
+
+        $('submit').on('click', function () {
+            if ($('#operation_modify_newFormat').val() == '')
+                $('#operation_modify_newFormat').val('O-T');
+        });
+        //On change column format
+        $('#operation_modify_columnFormat').on('change', function () {
+            if (this.value == 1)
+            {
+                $('#modifyFormatPhone').removeClass('hidden');
+                $('#modifyFormatDate').addClass('hidden');
+                if ($('#operation_modify_countryCode').val() == 0)
+                    $('#operation_modify_countryCode').val('');
+                if ($('#operation_modify_newFormat').val() == 'O-T')
+                    $('#operation_modify_countryCode').val('');
+                if ($('#operation_modify_sourceFormatDate').val() == '')
+                    $('#operation_modify_sourceFormatDate').val('O-T');
+                if ($('#operation_modify_targetFormatDate').val() == '')
+                    $('#operation_modify_targetFormatDate').val('O-T');
+
+            }
+            if (this.value == 2)
+            {
+                $('#modifyFormatPhone').addClass('hidden');
+                $('#modifyFormatDate').removeClass('hidden');
+                if ($('#operation_modify_countryCode').val() == '')
+                    $('#operation_modify_countryCode').val(0);
+                if ($('#operation_modify_newFormat').val() == '')
+                    $('#operation_modify_newFormat').val('O-T');
+                if ($('#operation_modify_sourceFormatDate').val() == 'O-T')
+                    $('#operation_modify_sourceFormatDate').val('');
+                if ($('#operation_modify_targetFormatDate').val() == 'O-T')
+                    $('#operation_modify_targetFormatDate').val('');
+            }
+        });
+        //On click in international phone
+        $('#operation_modify_targetFormatPhone_0').on("click", function () {
+            $('#countryCode').removeClass('hidden');
+            $('#newFormat').addClass('hidden');
+        });
+        //On click in manuel format
+        $('#operation_modify_targetFormatPhone_1').on("click", function () {
+            $('#countryCode').addClass('hidden');
+            $('#newFormat').removeClass('hidden');
+        });
+        //On click in target phone
+        $('#operation_modify_targetFormatPhone_0').on('change', function () {
+            if ($('#operation_modify_countryCode').val() == 0)
+                $('#operation_modify_countryCode').val('');
+            if ($('#operation_modify_newFormat').val() == '')
+                $('#operation_modify_newFormat').val('O-T');
+        });
+        //On click in manuel phone
+        $('#operation_modify_targetFormatPhone_1').on('change', function () {
+            if ($('#operation_modify_newFormat').val() == 'O-T')
+                $('#operation_modify_newFormat').val('');
+            if ($('#operation_modify_countryCode').val() == '')
+                $('#operation_modify_countryCode').val(0);
+        });
+
+
+
+        //If checked 
+        if ($('#operation_modify_modifyStructure_0').is(':checked')) {
+            $('#modifyRename').removeClass('hidden');
+            if ($('#operation_modify_modifyNameColumnToRename').val() == 'O-T')
+                $('#operation_modify_modifyNameColumnToRename').val('');
+            if ($('#operation_modify_modifyNameColumnRename').val() == 'O-T')
+                $('#operation_modify_modifyNameColumnRename').val('');
+        }
+
+        if ($('#operation_modify_modifyStructure_1').is(':checked'))
+            $('#modifySort').removeClass('hidden');
+
+        if ($('#operation_modify_modifyStructure_2').is(':checked'))
+        {
+            $('#modifyAdd').removeClass('hidden');
+            if ($('#operation_modify_modifyNameColumnPosition').val() == 'O-T')
+                $('#operation_modify_modifyNameColumnPosition').val('O-T');
+        }
+
+        if ($('#operation_modify_modifyAddedPosition_1').is(':checked'))
+        {
+            $('#operation_modify_modifyNameColumnPosition').removeClass('hidden');
+            if ($('#operation_modify_modifyNameColumnPosition').val() == 'O-T')
+                $('#operation_modify_modifyNameColumnPosition').val('');
+        }
+
+        if ($('#operation_modify_modifyAddedPosition_0').is(':checked')) {
+            $('#operation_modify_modifyNameColumnPosition').addClass('hidden');
+            $('#operation_modify_modifyNameColumnPosition_error').addClass('hidden');
+            $('#operation_modify_modifyNameColumnPosition').val('O-T');
+        }
+
+        if ($('#operation_modify_modifyStructure_3').is(':checked'))
+        {
+            $('#modifyDelete').removeClass('hidden');
+        }
+
+        if ($('#operation_modify_modifyStructure_4').is(':checked'))
+        {
+            $('#modifyPosition').removeClass('hidden');
+        }
+
+
+        if ($('#operation_modify_reorderPosition_0').is(':checked'))
+        {
+            $('#operation_modify_reorderColumnName').addClass('hidden');
+            $('#operation_modify_reorderColumnName_error').addClass('hidden');
+            $('#operation_modify_reorderColumnName').val('O-T');
+        }
+
+        if ($('#operation_modify_reorderPosition_1').is(':checked'))
+        {
+            $('#operation_modify_reorderColumnName').removeClass('hidden');
+            $('#operation_modify_reorderColumnName_error').removeClass('hidden');
+            if ($('#operation_modify_reorderColumnName').val() == 'O-T')
+                $('#operation_modify_reorderColumnName').val('');
+        }
+
+
+        if ($('#operation_modify_modifyStructure_5').is(':checked'))
+        {
+            $('#modifyFormat').removeClass('hidden');
+            //If target phone is cheked
+            if ($('#operation_modify_targetFormatPhone_0').is(':checked')) {
+                if ($('#operation_modify_countryCode').val() == 0)
+                    $('#operation_modify_countryCode').val('');
+                $('#operation_modify_newFormat').val('O-T');
+            }
+            //If manuel is phone
+            if ($('#operation_modify_targetFormatPhone_1').is(':checked')) {
+                if ($('#operation_modify_newFormat').val() == 'O-T')
+                    $('#operation_modify_newFormat').val('');
+                $('#operation_modify_countryCode').val(0);
+                $('#countryCode').addClass('hidden');
+                $('#newFormat').removeClass('hidden');
+                if ($('#operation_modify_sourceFormatDate').val() == '')
+                    $('#operation_modify_sourceFormatDate').val('O-T');
+                if ($('#operation_modify_targetFormatDate').val() == '')
+                    $('#operation_modify_targetFormatDate').val('O-T');
+            }
+
+            //If format date is selected
+            if ($('#operation_modify_columnFormat').val() == 2)
+            {
+                $('#modifyFormatDate').removeClass('hidden');
+                $('#modifyFormatPhone').addClass('hidden');
+                $('#operation_modify_newFormat').val('O-T');
+                if ($('#operation_modify_countryCode').val() == '')
+                    $('#operation_modify_countryCode').val(0);
+                if ($('#operation_modify_sourceFormatDate').val() == 'O-T')
+                    $('#operation_modify_sourceFormatDate').val('');
+                if ($('#operation_modify_targetFormatDate').val() == 'O-T')
+                    $('#operation_modify_targetFormatDate').val('');
+
+            }
+        }
+
+    }
+
+</script>    

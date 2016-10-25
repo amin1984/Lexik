@@ -1,0 +1,246 @@
+{% extends 'SatisfactoryOperationBundle::layout_edit_operation.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1> PARAMETRAGE DE L'OPERATION - ENRICHIR </h1>
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard"  ng-controller="operationEditEnrichCtrl" id="form-operation" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a href="{{ path('operation_dealing_edit',{'id': operation.dealing.id}) }}">
+                            <button type="button" class="btn btn-info btn-xs">
+                                <i class="fa fa-arrow-left"></i> 
+                                Retour à la page d'édition du traitement  {{ operation.dealing.name }}  
+                            </button> 
+                        </a>  
+                        <br>    
+                        {{ form_start(edit_form, {'method': 'post', 'action': path('operation_operation_edit',{'id': operation.id }), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <br>
+                            <label class="col-sm-12 label-margin-bottom">
+                                Descriptif court pour identifier l'opération :
+                            </label>
+                            <div class="col-sm-6 {% if (edit_form.description.vars.errors | length > 0) %} has-error {% endif %}">
+                                {{ form_widget(edit_form.description, { 'attr': {'class': 'form-control',} }) }}
+
+                                {% for error in edit_form.description.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-12">
+                                <label class="col-sm-12 label-margin-bottom ">
+                                    Principe du filtrage à appliquer : &nbsp;
+                                </label>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+
+                                    <div class="col-sm-12">
+                                        {{ form_widget(edit_form.enrichFilter.children[0]) }}
+                                        {{ edit_form.enrichFilter.children[0].vars.label }} :
+                                    </div>
+                                    <div  id="correspondance">
+                                        <div class="col-sm-12" >
+                                            <label class="col-sm-12 label-margin-header">                                                
+                                                Nom de la colonne du fichier source (CSV) dans laquelle on va venir enrichir la valeur (appelée "colonne cible")* :
+                                            </label>
+                                            <div class="col-sm-6 {% if (edit_form.enrichColumnName.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.enrichColumnName, { 'attr': {'class': 'form-control'} }) }}
+                                                {% for error in edit_form.enrichColumnName.vars.errors %}
+                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </div> 
+                                        </div>     
+
+                                        <div class="col-sm-12" >    
+                                            <div class="col-sm-6">
+                                                <label class="label-margin-header"> </label>
+                                                {{ form_widget(edit_form.correspondance, { 'attr': {'class': 'form-control',} }) }}
+                                            </div> 
+                                            <div class="col-sm-3">
+                                                <a href="{{ path('operation_correspondance_new') }}">
+                                                    <label class="label-margin-header"></label>
+                                                    <button   class="btn btn-primary btn-group pull-right group-actions floatleft">
+                                                        <i class="fa fa-plus"></i> Ajouter une correspondance
+                                                    </button>
+                                                </a>
+                                            </div>
+                                            <br><br> 
+                                        </div>
+                                        <div class="col-sm-12" >
+                                            <div class="col-sm-6">
+                                                <label class="label-margin-header"></label>
+                                                <select id="targetColumn" name="targetColumn" class="form-control" >
+                                                    <option  value="{{ '{{ firstItem }}' }}" >
+                                                        {{ '{{ firstItem }}' }}
+                                                    </option>    
+                                                    <option   ng-repeat="column in columnsData" value="{{ '{{ column.label }}' }}" >
+                                                        {{ '{{ column.label }}' }} 
+                                                    </option>
+                                                </select>
+                                            </div> 
+                                            <br><br>         
+                                        </div>    
+                                        <!-- Start QueryBuilder-->
+                                        <label class="col-sm-12 label-margin-bottom">
+                                            Condition d'inclusion :
+                                        </label>
+                                        <div class="col-sm-12" >
+                                            <div class="col-sm-12"> 
+                                                <div class="loader center-block {{ '{{ load }}' }}"></div>
+                                                <div id="builderCorresp"></div>
+                                            </div> 
+                                        </div>         
+                                        <!-- End QueryBuilder-->  
+
+                                        <input id="jsonCorrespondence" type="hidden" name="jsonCorrespondence" value="{{ '{{ jsonCorrespondence }}'|raw }}">
+
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <br>
+                                        {{ form_widget(edit_form.enrichFilter.children[1]) }}
+                                        {{ edit_form.enrichFilter.children[1].vars.label }} :
+                                    </div>           
+
+                                    <div class="col-sm-12" id="rule">
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-7">
+                                                <label class="label-margin-header">
+                                                    Nom de la colonne dont le contenu va être modifié sur la base de la règle*
+                                                </label>
+                                                <div class="{% if (edit_form.enrichColumnNameRuleSource.vars.errors | length > 0) %} has-error {% endif %}">
+                                                    {{ form_widget(edit_form.enrichColumnNameRuleSource, { 'attr': {'class': 'form-control inline'} }) }}
+                                                    {% for error in edit_form.enrichColumnNameRuleSource.vars.errors %}
+                                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                                <label class="label-margin-header">
+                                                    La règle*
+                                                </label>
+                                                <div class="{% if (edit_form.enrichRule.vars.errors | length > 0) %} has-error {% endif %}">
+                                                    {{ form_widget(edit_form.enrichRule, { 'attr': {'class': 'form-control inline'} }) }}
+                                                    {% for error in edit_form.enrichRule.vars.errors %}
+                                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="hint">
+                                                    <p><span>Liste des tags :</span></p>
+                                                    <p><span>- [Nom de la colonne] est remplacé par le contenu de la colonne </span><span>ayant pour nom </span><span>"Nom de la colonne"</span></p>
+                                                    <p><span>- [AAAA] est remplacé par l'année sur 4 chiffres</span></p>
+                                                    <p><span>- [MM] est remplacé par le mois sur 2 chiffres</span></p>
+                                                    <p><span>- [JJ] est remplacé par le jour sur 2 chiffres</span></p>
+                                                    <p><span>
+                                                            Exemple: [nom de la colonne1] & "#" & [nom de la colonne25] & "$$" <br>
+                                                            [aaaa].[mm].[jj]-loremipsum ==> 2016.04.01-loremipsum
+                                                        </span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>  
+
+                                    <!-- Start QueryBuilder-->
+                                    <div class="col-sm-12" >
+                                        <br>
+                                        <label class=" label-margin-bottom ">
+                                            Les conditions en place pour appliquer cette opération (inclusion) :
+                                        </label>
+                                    </div> 
+                                    <div class="col-sm-12" >
+                                        <div class=""> 
+                                            <div class="loader center-block {{ '{{ loader }}' }}"></div>
+                                            <div id="builder"></div>
+                                            <div class="alert alert-danger fade in {{ '{{ isWarning }}' }}">
+                                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                                <h4>Erreur !</h4>
+                                                <p>
+                                                    {{ '{{ warning }}' }}
+                                                </p>
+                                            </div>
+                                        </div> 
+                                    </div>         
+                                    <!-- End QueryBuilder--> 
+                                    <div class="col-sm-12">
+                                        <p class="help">   
+                                            La syntaxe des wildcards est :<br>
+
+                                            - commence par toto : toto*<br>
+
+                                            - termine par toto : *toto<br>
+
+                                            - ne commence pas par : { {!toto} }*<br>
+
+                                            - ne termine pas par : *{ {!toto} }<br>
+
+                                            - contient  : *toto*<br>
+
+                                            - ne contient pas : { {!*toto*} }<br>
+                                        </p>
+                                    </div>   
+                                    <input id="json" type="hidden" name="json" value="{{ '{{ json }}' }}">
+                                    <div class="col-sm-12">  
+
+                                        <label class="label-margin-header">
+                                            {{ form_widget(edit_form.status , { 'attr': {'class': '' } }) }} Actif
+                                        </label>  
+                                    </div> 
+
+                                    <div class="col-sm-12">
+                                        <br>
+                                        <button  class="btn btn-primary" >
+                                            <i class="fa fa-save"></i>  Sauver
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>  
+                        </div>
+                        {{ form_end(edit_form) }}   
+                    </div>
+                </div>
+            </div>
+    </section>
+
+    <!--  Modal -->
+    <div  class="modal fade" id="filterManualColumns" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"> Insérer manuelement les colonnes </h4>
+                </div>
+                <div class="modal-body-delete">
+                    <br>
+                    <div class="col-sm-12">
+                        <h4>Erreur !</h4>
+                        <p>
+                            {% trans %}Traitement KO{% endtrans %}
+                        </p>
+                        <p>
+                            {% trans %}Traitement KO colonnes manuel{% endtrans %}
+                        </p>
+                    </div>
+                    <div class="col-sm-12">
+                        <textarea id="contentFilterManualColumns" placeholder="Colonne 1;Colonne 2;Colonne 3" style="width: 100%"></textarea>
+                    </div>
+                    <div class="col-sm-12">
+                        <a href="#" id="insertFilterManualColumns">
+                            <button  type="button" class="btn btn-primary" >Oui</button>
+                        </a>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                    </div>
+                    <br><br><br>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>        
+    <!-- End  Modal --> 
+    <!--main content end--> 
+    {% include 'SatisfactoryOperationBundle:js:operationEditEnrich.js.twig'with { 'operation': operation, 'dealingId': operation.dealing.id, 'selectedId': app.request.session.get('correspondanceId') } %}
+{% endblock %}

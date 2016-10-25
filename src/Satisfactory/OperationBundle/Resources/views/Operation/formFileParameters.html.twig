@@ -1,0 +1,138 @@
+<div class="panel-heading" >
+    <h4 class="panel-title">
+        <a ng-init="count1=0" ng-click="count1=count1+1" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne" class="collapsed">
+            Principe de récupération du fichier entrant 
+            <i ng-class="count1%2==0 ? 'fa fa-chevron-up' : 'fa fa-chevron-down' " class="floatright"></i>
+        </a>
+    </h4>
+</div>
+<div id="collapseOne" class="panel-collapse collapse {%  if( (form.compressionFile.vars.errors | length > 0) or (form.compressionFormat.vars.errors | length > 0) or (form.host.vars.errors | length > 0) or (form.port.vars.errors | length > 0) or (form.login.vars.errors | length > 0) or (form.password.vars.errors | length > 0)  ) %} in {% endif %}">
+    <div class="panel-body">
+        <div class="form-group">
+            <div class="col-sm-12 inline">
+                {{ form_widget(form.protocol, { 'attr': {'class': 'radio','name':'protocol'} }) }}
+            </div>
+            <div class="col-sm-6 {% if (form.host.vars.errors | length > 0) %} has-error {% endif %}">
+                <label class="label-margin-header">
+                    Hôte*
+                    {% for error in form.host.vars.errors %}
+                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                    {% endfor %}
+                </label>
+                {{ form_widget(form.host, { 'attr': {'class': 'form-control','name':'host'} }) }}
+
+            </div>  
+            <div class="col-sm-6 {% if (form.port.vars.errors | length > 0) %} has-error {% endif %}">
+                <label class="label-margin-header">
+                    Port*
+                    {% for error in form.port.vars.errors %}
+                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                    {% endfor %}
+                </label>
+                {{ form_widget(form.port, { 'attr': {'class': 'form-control','name':'port'} }) }}
+            </div>
+            <div class="col-sm-6 {% if (form.login.vars.errors | length > 0) %} has-error {% endif %}">
+                <label class="label-margin-header">
+                    Identifiant*
+                    {% for error in form.login.vars.errors %}
+                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                    {% endfor %}
+                </label>
+                {{ form_widget(form.login, { 'attr': {'class': 'form-control','name':'login'} }) }}
+            </div>  
+            <div class="col-sm-6 {% if (form.password.vars.errors | length > 0) %} has-error {% endif %}">
+                <label class="label-margin-header">
+                    Mot de passe*
+                    {% for error in form.password.vars.errors %}
+                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                    {% endfor %}
+                </label>
+                {{ form_widget(form.password, { 'attr': {'class': 'form-control','name':'password', 'value':dealing.password} }) }}
+                <br><br>
+            </div>
+
+            
+
+            <div class="col-sm-4">
+                <label class="label-margin-header">Sous-dossier</label> <small>(laisser vide si à la racine)</small>
+                {{ form_widget(form.directory, { 'attr': {'class': 'form-control','name':'directory'} }) }}
+                {% for error in form.directory.vars.errors %}
+                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                {% endfor %}
+            </div>
+            <div class="col-sm-12" style="margin-top: 10px">  
+                <div class="row">
+                    <div class="col-sm-3 inline">
+                        Fichier compressé*
+                    </div>    
+                    <div class="col-sm-8">
+                        {{ form_widget(form.isCompressed, { 'attr': {'ng-model':'type', 'ng-change':'typeValue(type)', 'class': 'radio'} }) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12" ng-show="show">     
+                <div class="row">
+                    <div class="col-sm-12 {% if (form.compressionFormat.vars.errors | length > 0) %} has-error {% endif %}"">
+                        <div class="col-sm-3">
+                            Format de compression*
+                        </div>    
+                        <div class="col-sm-3">
+                            {{ form_widget(form.compressionFormat, { 'attr': {'class': 'radio'} }) }}
+                        </div>
+                        <div class="col-sm-7 inline">
+                            {% for error in form.compressionFormat.vars.errors %}
+                                <span class="alert alert-danger-form">{{ error.message }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 {% if (form.compressionFile.vars.errors | length > 0) %} has-error {% endif %}">
+                        <label class="col-sm-12 inline">
+                            Nom du fichier compressé (avec extension)*
+                        </label>  
+                        <div class="col-sm-5 inline">
+                            {{ form_widget(form.compressionFile, { 'attr': {'class': 'form-control' } }) }}
+                        </div>
+                        <div class="col-sm-7 inline">
+                            {% for error in form.compressionFile.vars.errors %}
+                                <span class="alert alert-danger-form">{{ error.message }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 {% if (form.fileName.vars.errors | length > 0) %} has-error {% endif %}">
+                <label class="label-margin-header">Nom fixe du fichier entrant à traiter avec l'extension*</label>
+                {{ form_widget(form.fileName, { 'attr': {'class': 'form-control','name':'directory'} }) }}
+                {% for error in form.fileName.vars.errors %}
+                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                {% endfor %}
+            </div>  
+            <div class="col-md-3" ng-show="showWildcard">
+                <br />
+                <br />
+                {{ form_widget(form.isFileNameWildcard, { 'attr': {'ng-model':'type', 'ng-change':'typeValue(type)', 'class': 'radio'} }) }}
+            </div>
+            <div class="col-sm-12">
+                <p class="help">
+                    Si le nom du fichier contient une date, il faut utiliser le lexique suivant :<br />
+                    --> La date est à inscrire entre crochets<br />
+                    --> AAAA remplace l'année sur 4 chiffres et AA sur 2 chiffres<br />
+                    --> MM remplace le mois sur 2 chiffres<br />
+                    --> JJ remplace le jour sur 2 chiffres<br />
+                    --> L'utilisation de séparateurs est possible, tel que / ; - ; . etc...<br />
+
+                    Pour la date du jour de l'exécution : [********]<br />
+                    --> Par exemple : [AAAAMMJJ] devient 20160603, [JJ/MM/AA] devient 03/06/16, [JJ-MM] devient 03-06<br />
+
+                    Pour la date calculée, antérieure ou future :<br />
+                    - L'opérateur "+" ou "-" permet de déterminer une date antérieure ou future, par exemple "date du jour + 2 jours"<br />
+                    Format à utiliser : [*******:J+X] ou [******:J-X]<br />
+                    - Le "X" est donc à remplacer par le nombre de jours en plus ou en moins.<br />
+                    --> Par exemple : [AAAAMMJJ:J+1] ou [JJ-MM-AAAA:J-3]<br />
+                </p> 
+            </div> 
+        </div>
+    </div>
+</div>

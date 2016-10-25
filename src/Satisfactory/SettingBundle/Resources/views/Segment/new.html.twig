@@ -1,0 +1,80 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>Paramétrages - Liste des Segments</h1>
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard" ng-controller="segmentCtrl" id="form-user" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <label class="">
+                            Il y a actuellement {{ countSegment }} segments enregistrés en base de données.
+                        </label>
+                        <br><br>
+                        <div class="">
+                            <a {% if(path is not null) %}href="../../../uploads/settings/segment/{{ path }}" {% else %} title="Il faut charger un fichier" {% endif %} class="btn btn-default">
+                                <i class="fa fa-download"></i> Télécharger la liste des Segments
+                            </a>
+                        </div>
+                        <br><br>       
+                        <!--Form start--> 
+                        {{ form_start(form, {'method': 'post', 'action': path('satisfactory_setting_segment_new'), 'attr': {'class': 'form-horizontal form-border', 'novalidate': 'novalidate'} }) }}
+                        {% if (app.session.flashBag.has('error') or app.session.flashBag.has('notice')) %}
+                            <div class="form-group">
+                                {% if (app.session.flashBag.has('error')) %}
+                                    <div class="alert alert-warning">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                        {% for msg in app.session.flashBag.get('error') %}
+                                            {{ msg }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if (app.session.flashBag.has('notice')) %}
+                                    <div class="alert alert-success">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                        {% for msg in app.session.flashBag.get('notice') %}
+                                            {{ msg }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}  
+
+                        <div class="form-group">
+                            <label class="col-sm-12">
+                                Traiter un nouveau fichier CSV pour importer les Segments :
+                            </label>
+                            <br><br>  
+                            <div class="col-sm-12">
+                                {{ form_widget(form.file, { 'attr': {'class': ''} }) }}
+                                {% for error in form.file.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-12">
+                                Toutes les données seront écrasées par les données de ce fichier la. Il s'agit donc d'un remplacement.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i> Valider
+                                </button>
+                            </div>
+                        </div> 
+                        <!--Form end-->      
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--main content end--> 
+    {#{% include 'SatisfactoryOperationBundle:js:correspondanceFormNew.js.twig' %}#}
+{% endblock %}
+

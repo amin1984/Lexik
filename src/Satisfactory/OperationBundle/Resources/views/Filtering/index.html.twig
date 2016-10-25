@@ -1,0 +1,122 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>FILTRAGE CLIENT</h1>
+    </div>
+    <section ng-app="neuboard"  ng-controller="filteringCtrl" id="main-content" class="animated fadeInRight">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a href="{{ path('operation_filtering_new') }}">
+                            <button  class="btn btn-primary btn-lg floatleft">
+                                <i class="fa fa-plus"></i> Créer un nouveau filtrage client
+                            </button>
+                        </a>
+                        <br><br><br>
+                        <label class="col-md-12">Rechercher un filtrage client :</label>
+                        <form action="{{ path('operation_filtering_index') }}" method="POST">  
+                            <div class="col-md-6">
+                                <input  type="text" name="expression" class="form-control" value="{{ expression }}">
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
+                            <div class="col-md-6">
+                                <select class="form-control col-md-6" name="client">
+                                    <option value="all">
+                                        Tous les clients
+                                    </option>    
+                                    {% for client in clients %}
+                                        <option {% if(client.id == selectedClient) %} selected="selected" {% endif %} value="{{ client.id }}">
+                                            {{ client.userName }}
+                                        </option>
+                                    {% endfor %}
+                                </select><br>  
+                            </div>  
+                            <div class="col-md-6">
+                                <button  class="btn btn-primary btn-lg inline" >
+                                    <i  class="fa fa-search"></i> Rechercher
+                                </button>
+                            </div> 
+                        </form>           
+                        <table  id="example" class="table table-striped table-bordered" datatable="" cellspacing="0" >
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Id sharing-data</th>
+                                    <th>Nom filtrage</th>
+                                    <th>Nombre de traitements utilisant ce filtrage</th>
+                                    <th>Client</th>
+                                    <th>Créé par</th>
+                                    <th>Dernière mise à jour</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>   
+
+                            <tbody>
+                                {% for filtering in pagination %}
+                                    <tr>
+                                        <td>{{ filtering.id }}</td>
+                                        <td>{{ filtering.sharingData }}</td>
+                                        <td>{{ filtering.name }}</td>
+                                        <td></td>
+                                        <td>{{ filtering.client.userName }}</td>
+                                        <td>{{ filtering.creatorName }}</td>
+                                        <td>{{ filtering.updatedAt is empty ? "" : filtering.updatedAt | date('Y/m/d H:i') }}</td>
+                                        <td>
+                                            <a title="Editer" href="{{ path('operation_filtering_edit',{'id' : filtering.id})  }}">
+                                                <button  class="btn btn-default" type="button" >
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                            </a>   
+                                            <button title="Supprimer"  class="btn btn-default" type="button" data-target="#filteringDelete{{ filtering.id }}" data-toggle="modal">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                            <!-- filteringDelete Modal -->
+                                            <div  class="modal fade" id="filteringDelete{{ filtering.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                            <h4 class="modal-title" id="myModalLabel"> Suppresion </h4>
+                                                        </div>
+                                                        <div class="modal-body-delete">
+                                                            <br>
+                                                            <div class="col-sm-12">
+                                                                Êtes-vous sûr de vouloir supprimer ce filtrage client ?
+                                                            </div>
+                                                            <br><br>
+                                                            <div class="col-sm-12">
+                                                                <a href="{{ path('operation_filtering_delete',{'id' : filtering.id}) }}">
+                                                                    <button  type="button" class="btn btn-primary" >Oui</button>
+                                                                </a>
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                                                            </div>
+
+                                                            <br><br><br>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>        
+                                            <!-- End filteringDelete Modal -->   
+                                        </td>
+                                    </tr>
+                                {% endfor %}  
+                            </tbody>    
+                        </table>
+                        {# display pagination #}
+                        <div class="pagination">
+                            {{ knp_pagination_render(pagination) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'SatisfactoryOperationBundle:js:filtering.js.twig' %}                        
+{% endblock %}        
+
+

@@ -1,0 +1,16 @@
+<script type="text/javascript">
+
+    function operationEditDuplicateCtrl() {
+        
+        //Empty name 
+        if($("#operation_duplicate_duplicateNameColumn").val() == "O-T" )
+        {
+            $("#operation_duplicate_duplicateNameColumn").val('');
+            $('#operation_duplicate_status').attr('checked', 'checked');
+        }
+     
+        //If not checked
+        if(!$("#operation_duplicate_duplicateKeep_1").is(':checked'))
+            $("#operation_duplicate_duplicateKeep_0").attr('checked', 'checked');
+    }
+</script>  

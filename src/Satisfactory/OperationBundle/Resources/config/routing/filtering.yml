@@ -1,0 +1,19 @@
+operation_filtering_index:
+    path:     /
+    defaults: { _controller: "SatisfactoryOperationBundle:Filtering:index" }
+    methods:  [GET, POST]
+
+operation_filtering_new:
+    path:     /new
+    defaults: { _controller: "SatisfactoryOperationBundle:Filtering:new" }
+    methods:  [GET, POST]
+
+operation_filtering_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "SatisfactoryOperationBundle:Filtering:edit" }
+    methods:  [GET, POST]
+
+operation_filtering_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "SatisfactoryOperationBundle:Filtering:delete" }
+    methods:  GET

@@ -1,0 +1,53 @@
+<div class="panel-heading">
+    <h4 class="panel-title">
+        <a ng-init="count3=0" ng-click="count3=count3+1" class="collapsed" data-toggle="collapse" data-parent="#accordion3" href="#collapseThree">
+            Notifications email
+            <i ng-class="count3%2==0 ? 'fa fa-chevron-up' : 'fa fa-chevron-down' " class="floatright"></i>
+        </a>
+    </h4>
+</div>
+<div id="collapseThree" class="panel-collapse collapse {% if(notificationError) %} in {% endif %}">
+
+    <div class="panel-body notification" >
+        <div class="col-sm-12 "> 
+            <ul>  
+                {% if(dealing.notifications|length != 0) %}
+                    Emails qui reçoivent les notifications pour indiquer une erreur lors d'un traitement et/ou une validation de bon traitement. 
+                    {% for notification in form.notifications %}
+                        {% if(notification.vars.value.id) %}
+                            <div class="{% if (not notification.email.vars.value) %} has-error {% endif %}">
+                                <li id="notification{{ notification.vars.value.id }}">
+                                    {{ form_row(notification.email,{ 'attr': {'class': 'form-control'} })}} 
+                                    {{ form_row(notification.type,{ 'attr': {'class': ''} })}} 
+                                    <span ng-click="notificationDelete('{{ path('operation_notification_delete',{'id' : notification.vars.value.id})  }}' )"  class="btn btn-primary">
+                                        <i class="fa fa-times"></i>
+                                    </span>
+                                </li>
+                                {% if( (not notification.email.vars.value) or (not notification.type.vars.value) ) %}
+                                    <span id="delete_{{notification.vars.name}}"  class="alert alert-danger-form">{{ notificationError }}</span>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+            </ul>
+        </div>
+        <div class="col-sm-12">
+            <br>Ajouter un nouvel email :
+            <ul class="tags" data-prototype="{{ form_widget(form.notifications.vars.prototype)|e }}">
+                {% for notification in form.notifications %}
+                    {% if( not notification.vars.value.id) %}
+                        <div class="{% if (not notification.email.vars.value) %} has-error {% endif %}">
+                            <li class="notication{{ notification.vars.value.id }} inline">
+                                {{ form_row(notification.email,{ 'attr': {'class': 'form-control'} })}} 
+                                {{ form_row(notification.type,{ 'attr': {'class': ''} })}}
+                            </li> 
+                            {% if( (not notification.email.vars.value) or (not notification.type.vars.value) ) %}
+                                <span   class="delete-alert alert-danger-form">{{ notificationError }}</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </ul>  
+        </div>  
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<!--main content start-->
+<section id="form-user" class="animated fadeInUp" >
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    {{ form_start(form, {'method': 'post', 'action': path('operation_notification_new'), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                    <div class="form-group">
+                        <div class="col-sm-4">
+                            {#<label class="">Email</label>#}
+                            {{ form_widget(form.email, { 'attr': {'ng-model': 'user.email', 'class': 'form-control','name':'email','placeholder':'Email'} }) }}
+                            {% for error in form.email.vars.errors %}
+                                <span class="alert alert-danger-form">{{ error.message }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="col-sm-8">
+                            {{ form_widget(form.type, { 'attr': {'class': ''} }) }}
+                            {% for error in form.type.vars.errors %}
+                                <span class="alert alert-danger-form">{{ error.message }}</span>
+                            {% endfor %}
+                        </div>   
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-sm-6">
+                            <button type="submit" class="btn btn-primary" >
+                                <i class="fa fa-save"></i> Sauver
+                            </button>
+                        </div>
+                    </div> 
+                    {{ form_end(form) }}
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--main content end--> 

@@ -1,0 +1,62 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>EDITION D'UNE ENTREE DE LA CORRESPONDANCE {{ correspondence.name }}</h1>
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard"  ng-controller="operationCtrl" id="form-operation" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">  
+                        <br> 
+                        <div class="col-sm-12">
+                            {% if(document.createdBy is not null) %} 
+                                La personne qui a créé la correspondance est {{ document.createdBy }} 
+                            {% endif %}
+                            {% if(document.createdAt is not null) %} 
+                                le {{ document.createdAt | date('d/m/Y h:i') }} 
+                            {% endif %}
+                        </div> <br> 
+                        <br>
+                        {{ form_start(form, {'method': 'post', 'action': path('operation_entercorrespondence_edit',{'id': document.id }), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                {% for key, input in document.input %}
+                                    <label class="col-sm-6">
+                                        {{ key }}
+                                    </label>
+                                    <input type="text" name="{{ key }}" class="form-control" value="{{ input }}"/>
+                                {% endfor %}
+                            </div>  
+                            <div class="col-sm-6">
+                                {% for key, output in document.output %}
+                                    <label class="col-sm-6">
+                                        {{ key }}
+                                    </label>
+                                    <input type="text" name="{{ key }}" class="form-control" value="{{ output }}"/>
+                                {% endfor %}
+                            </div> 
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-0 col-sm-6">
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i> Sauver
+                                </button>
+                                <a href="{{ path('operation_correspondance_edit',{'id': document.correspondenceId}) }}">
+                                    <button type="button" class="btn btn-default">
+                                        <i class="fa fa-arrow-left"></i> Fermer sans enregistrer
+                                    </button> <br>
+                                </a>
+                            </div>
+                        </div> 
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--main content end--> 
+{% endblock %}           

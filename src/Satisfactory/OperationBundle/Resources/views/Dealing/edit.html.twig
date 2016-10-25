@@ -1,0 +1,148 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>EDITION D'UN TRAITEMENT</h1>
+        {#<div class="breadcrumb-wrapper hidden-xs">
+            <span class="label">Vous êtes ici :</span>
+            <ol class="breadcrumb">
+                <li><a href="{{ path('operation_dealing_index') }}">Traitements</a>
+                </li>
+                <li class="active">Editer</li>
+            </ol>
+        </div>#}
+    </div>
+    <!--main content start-->
+    <section id="form-user" ng-app="neuboard" ng-controller="dealingFormCtrl" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <!--Form stard--> 
+                        {{ form_start(form, {'method': 'post', 'action': path('operation_dealing_edit',{'id': dealing.id}), 'attr': {'id':'form-edit-dealing','class': 'form-horizontal form-border', 'novalidate': 'novalidate'} }) }}
+
+                        <div class="form-group">
+                            <div class="col-sm-12 {% if (form.name.vars.errors | length > 0) %} has-error {% endif %}">
+                                <label class="">Nom du traitement *</label>
+                                {{ form_widget(form.name, { 'attr': {'class': 'form-control','name':'name','placeholder':'Nom du traitement'} }) }}
+                                {% for error in form.name.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"></label>
+                            <div class="col-sm-12 {% if (form.client.vars.errors | length > 0) %} has-error {% endif %}">
+                                <label class="">Client *</label>
+                                {{ form_widget(form.client, { 'attr': {'class': 'form-control','client':'sharingData'} }) }}
+                                {% for error in form.client.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div>
+                            {% if(dealing.createdBy is not null) %} 
+                                Créé par : {{ dealing.createdBy.lastName }}  {{ dealing.createdBy.firstName }} 
+                            {% endif %}
+                            {% if(dealing.createdAt is not null) %} 
+                                le {{ dealing.createdAt | date('d/m/Y h:i') }} 
+                            {% endif %}
+                            <br>
+                            {% if(dealing.updatedAt is not null) %} 
+                                Mis à jour 
+                            {% endif %} 
+                            {% if(dealing.updatedBy is not null) %} 
+                                par : {{ dealing.updatedBy.lastName }} {{ dealing.updatedBy.firstName }} 
+                            {% endif %}  
+                            {% if(dealing.updatedAt is not null) %} 
+                                le {{ dealing.updatedAt | date('d/m/Y h:i') }} 
+                            {% endif %}
+                        </div>
+                        <!--Accordion Start-->     
+                        <div class="panel-group accordion " >
+                            <div class="panel panel-default" id="accordion1">
+                                {% include 'SatisfactoryOperationBundle:Operation:formFileParameters.html.twig' %}
+                            </div>
+
+                            <div class="panel panel-default" id="accordion2">
+                                {% include 'SatisfactoryOperationBundle:Operation:formFileStructure.html.twig' %}
+                            </div>
+
+                            <div class="panel panel-default" id="accordion3">
+                                {% include 'SatisfactoryOperationBundle:Operation:formNotification.html.twig' %}
+                            </div>
+
+                            <div class="panel panel-default" id="accordion4">
+                                {% include 'SatisfactoryOperationBundle:Operation:formReccurence.html.twig' %}
+                            </div>
+
+                            <div class="panel panel-default" id="accordion5">
+                                {% include 'SatisfactoryOperationBundle:Operation:editOperationList.html.twig' %}
+                            </div>
+                        </div>
+                        <!--Accordion end-->      
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <h3>Vérifcation du fichier CSV</h3>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <input style="width: 100%;margin-top: 3px;" type="text" name="fileNameControl"  placeholder="(Optionnel) nom du fichier si horodaté" /> 
+                                    </div> 
+                                    <div class="col-sm-5">
+                                        <button type="button" class="btn btn-primary verify-csv" >
+                                            <i class="fa fa-check"></i> V&eacute;rifier le fichier CSV
+                                        </button>
+                                    </div>  
+                                </div>
+                                <div class="col-sm-12">
+                                    <span class="verifycsv-text" style="display: none">Vérification du fichier CSV en cours. Prière de patienter...</span>
+                                </div>
+                                <br />  
+                                <button type="submit" class="btn btn-primary dealing-submit">
+                                    <i class="fa fa-save"></i> Sauver
+                                </button>
+                                <a href="{{ path('operation_dealing_index') }}" class="btn btn-default">
+                                    <i class="fa fa-arrow-left"></i> Fermer sans enregistrer
+                                </a>
+                            </div>
+                            <div class="col-sm-12">
+                                <span class="verifycsv-text" style="display: none">Vérification du fichier CSV en cours. Prière de patienter...</span>
+                            </div>
+                        </div>  
+                    </div>
+                    {{ form_end(form) }}
+                    <!--Form end-->  
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--main content end-->
+
+    <!-- verify csv Modal -->
+    <div  class="modal fade" id="verifycsv" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel"> Fin de v&eacute;rification du fichier CSV</h4>
+                </div>
+                <div class="modal-body-delete">
+                    <br>
+                    <div id="verifycsv-message" class="col-sm-12">
+
+                    </div>
+                    <br><br>
+                    <div class="col-sm-12">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>     
+    <!--main content end--> 
+    {% include 'SatisfactoryOperationBundle:js:dealingEditForm.js.twig'with {'dealing':dealing, 'nbNotif': dealing.notifications|length,  'ajaxOrderUrl': path('operation_operation_order_ajax',{'id': dealing.id }), 'orderOperations': orderOperations, 'form': form } %}
+{% endblock %}
+

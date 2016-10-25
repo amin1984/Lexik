@@ -1,0 +1,27 @@
+satisfactory_operation_dealing:
+    resource: "@SatisfactoryOperationBundle/Resources/config/routing/dealing.yml"
+    prefix:   /dealing
+
+satisfactory_operation_notification:
+    resource: "@SatisfactoryOperationBundle/Resources/config/routing/notification.yml"
+    prefix:   /notification
+    
+satisfactory_operation_operation:
+    resource: "@SatisfactoryOperationBundle/Resources/config/routing/operation.yml"
+    prefix:   /operation  
+    
+satisfactory_operation_correspondance:
+    resource: "@SatisfactoryOperationBundle/Resources/config/routing/correspondance.yml"
+    prefix:   /correspondance  
+    
+satisfactory_operation_enter_correspondence:
+    resource: "@SatisfactoryOperationBundle/Resources/config/routing/entercorrespondence.yml"
+    prefix:   /entercorrespondence   
+    
+satisfactory_operation_reject:
+    resource: "@SatisfactoryOperationBundle/Resources/config/routing/reject.yml"
+    prefix:   /reject 
+ 
+satisfactory_operation_filtering:
+    resource: "@SatisfactoryOperationBundle/Resources/config/routing/filtering.yml"
+    prefix:   /filtering    

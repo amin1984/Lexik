@@ -1,0 +1,138 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1> PARAMETRAGE DE L'OPERATION - PUBLIER </h1>
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard"  ng-controller="operationEditPublishCtrl" id="form-operation" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a href="{{ path('operation_dealing_edit',{'id': operation.dealing.id}) }}">
+                            <button type="button" class="btn btn-info btn-xs">
+                                <i class="fa fa-arrow-left"></i> 
+                                Retour à la page d'édition du traitement  {{ operation.dealing.name }}  
+                            </button> 
+                        </a>  
+                        <br><br>    
+                        {{ form_start(edit_form, {'method': 'post', 'action': path('operation_operation_edit',{'id': operation.id }), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <label class="col-sm-12 label-margin-bottom">
+                                Descriptif court pour identifier l'opération :
+                            </label>
+                            <div class="col-sm-12 {% if (edit_form.description.vars.errors | length > 0) %} has-error {% endif %}">
+                                {{ form_widget(edit_form.description, { 'attr': {'class': 'form-control',} }) }}
+
+                                {% for error in edit_form.description.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-12 label-margin-bottom ">
+                                Définir la publication du fichier résultat : &nbsp;
+                            </label>
+                            <div class="col-sm-12 {% if (edit_form.publishProtocol.vars.errors | length > 0) %} has-error {% endif %}">
+                                {{ form_widget(edit_form.publishProtocol, { 'attr': {'class': 'radio','name':'protocol'} }) }}
+                                {% for error in edit_form.publishProtocol.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-6 {% if (edit_form.publishHost.vars.errors | length > 0) %} has-error {% endif %}">
+                                <label class="label-margin-header">
+                                    Hôte*
+                                    {% for error in edit_form.publishHost.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </label>
+                                {{ form_widget(edit_form.publishHost, { 'attr': {'class': 'form-control','name':'host'} }) }}
+                            </div>  
+                            <div class="col-sm-6 {% if (edit_form.publishPort.vars.errors | length > 0) %} has-error {% endif %}">
+                                <label class="label-margin-header">
+                                    Port*
+                                    {% for error in edit_form.publishPort.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </label>
+                                {{ form_widget(edit_form.publishPort, { 'attr': {'class': 'form-control','name':'port'} }) }}
+                            </div>
+                            <div class="col-sm-6 {% if (edit_form.publishLogin.vars.errors | length > 0) %} has-error {% endif %}">
+                                <label class="label-margin-header">
+                                    Identifiant*
+                                    {% for error in edit_form.publishLogin.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </label>
+                                {{ form_widget(edit_form.publishLogin, { 'attr': {'class': 'form-control','name':'login'} }) }}
+                            </div>  
+                            <div class="col-sm-6 {% if (edit_form.publishPassword.vars.errors | length > 0) %} has-error {% endif %}">
+                                <label class="label-margin-header">
+                                    Mot de passe*
+                                    {% for error in edit_form.publishPassword.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </label>
+                                {{ form_widget(edit_form.publishPassword, { 'attr': {'class': 'form-control','name':'password', 'type': 'password'} }) }}
+                            </div>
+
+                            <div class="col-sm-6">
+                                <label class="label-margin-header">
+                                    Sous-dossier (SousDossier1/Sous-dossier2)
+                                    <small>(laisser vide si à la racine)</small>
+                                </label> 
+                                {{ form_widget(edit_form.publishDirectory, { 'attr': {'class': 'form-control','name':'directory'} }) }}
+                                {% for error in edit_form.publishDirectory.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                                <label class="label-margin-header">Nom du fichier à déposer*</label>
+                                <div class="{% if (edit_form.publishFileName.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(edit_form.publishFileName, { 'attr': {'class': 'form-control','name':'directory'} }) }}
+                                    {% for error in edit_form.publishFileName.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div> 
+                            <div class="col-sm-12">
+                                <p class="help">
+                                    Si le nom du fichier contient une date, il faut utiliser le lexique suivant :<br />
+                                    --> La date est à inscrire entre crochets<br />
+                                    --> AAAA remplace l'année sur 4 chiffres et AA sur 2 chiffres<br />
+                                    --> MM remplace le mois sur 2 chiffres<br />
+                                    --> JJ remplace le jour sur 2 chiffres<br />
+                                    --> L'utilisation de séparateurs est possible, tel que / ; - ; . etc...<br />
+
+                                    Pour la date du jour de l'exécution : [********]<br />
+                                    --> Par exemple : [AAAAMMJJ] devient 20160603, [JJ/MM/AA] devient 03/06/16, [JJ-MM] devient 03-06<br />
+
+                                    Pour la date calculée, antérieure ou future :<br />
+                                    - L'opérateur "+" ou "-" permet de déterminer une date antérieure ou future, par exemple "date du jour + 2 jours"<br />
+                                    Format à utiliser : [*******:J+X] ou [******:J-X]<br />
+                                    - Le "X" est donc à remplacer par le nombre de jours en plus ou en moins.<br />
+                                    --> Par exemple : [AAAAMMJJ:J+1] ou [JJ-MM-AAAA:J-3]<br />
+                                </p>
+                            </div> 
+                            <div class="col-sm-12">  
+                                <label class="label-margin-header">
+                                    {{ form_widget(edit_form.status , { 'attr': {'class': '' } }) }} Actif
+                                </label>  
+                            </div> 
+
+                            <div class="col-sm-12">
+                                <br>
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i>  Sauver
+                                </button>
+                            </div>
+
+                        </div>
+                        {{ form_end(edit_form) }}    
+                    </div>
+                </div>
+            </div>
+    </section>
+    <!--main content end--> 
+    {% include 'SatisfactoryOperationBundle:js:operationEditPublish.js.twig'with {'operation':operation} %}
+{% endblock %}

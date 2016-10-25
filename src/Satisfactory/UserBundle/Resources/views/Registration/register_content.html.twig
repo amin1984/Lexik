@@ -1,0 +1,80 @@
+{% extends 'SatisfactoryUserBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>AJOUTER UN COMPTE ADMINISTRATEUR</h1>
+        
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard" ng-controller="UserCtrl" id="main-content" class="animated fadeInUp">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        {{ form_start(form, {'method': 'post', 'action': path('satisfactory_user_register'), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="">Email *</label>
+                                {{ form_widget(form.email, { 'attr': {'ng-model': 'user.username', 'class': 'form-control','name':'username','placeholder':'Nom du client'} }) }}
+                                {% for error in form.email.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-6">
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="">Login *</label>
+                                {{ form_widget(form.username, { 'attr': {'ng-model': 'user.username', 'class': 'form-control','name':'username','placeholder':'Nom du client'} }) }}
+                                {% for error in form.username.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-6">
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="">Mot de passe *</label>
+                                {{ form_widget(form.plainPassword.first, { 'attr': {'ng-model': 'user.username', 'class': 'form-control','name':'username','placeholder':'Nom du client'} }) }}
+                                {% for error in form.plainPassword.first.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-6">
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="">Confirmation *</label>
+                                {{ form_widget(form.plainPassword.second, { 'attr': {'ng-model': 'user.username', 'class': 'form-control','name':'username','placeholder':'Nom du client'} }) }}
+                                {% for error in form.plainPassword.second.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-6">
+
+                            </div>
+                        </div>    
+                        <br>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i> Sauver
+                                </button>
+                            </div>
+                        </div> 
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--main content end--> 
+{% include 'SatisfactoryUserBundle:js:newUser.js.twig'%}    
+{% endblock %}                

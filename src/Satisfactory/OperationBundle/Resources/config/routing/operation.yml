@@ -1,0 +1,53 @@
+operation_operation_new:
+    path:     /{id}/new
+    defaults: { _controller: "SatisfactoryOperationBundle:Operation:new" }
+    methods:  [GET,POST]
+    
+operation_operation_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "SatisfactoryOperationBundle:Operation:edit" }
+    methods:  [GET,POST]
+
+operation_operation_order_ajax:
+    path:     /{id}/order
+    defaults: { _controller: "SatisfactoryOperationBundle:Operation:ajaxOrderOperation" }
+    methods:  GET       
+    
+operation_operation_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "SatisfactoryOperationBundle:Operation:delete" }
+    methods:  GET   
+    
+operation_operation_activate:
+    path:     /{id}/activate
+    defaults: { _controller: "SatisfactoryOperationBundle:Operation:activate" }
+    methods:  GET  
+    
+operation_operation_filter_update_ajax:
+    path:     /{id}/update/operation/filter
+    defaults: { _controller: "SatisfactoryOperationBundle:Operation:ajaxUpdateOperationFilter" }
+    methods:  GET           
+    
+operation_operation__manualcolumns:
+    path:     /{id}/manualcolumns
+    defaults: { _controller: "SatisfactoryOperationBundle:Operation:manualcolumns" }
+    methods:  POST 
+    
+operation_operation_edit_concat:
+    path:     /{operation}/{id}/edit
+    defaults: { _controller: "SatisfactoryOperationBundle:Operation:editConcat" }
+    methods:  [GET,POST]   
+
+operation_operation_delete_concat:
+    path:     /{operation}/{concat}/delete
+    defaults: { _controller: "SatisfactoryOperationBundle:Operation:deleteConcat" } 
+    
+operation_operation_edit_replacement:
+    path:     /{operation}/replacement/{id}/edit
+    defaults: { _controller: "SatisfactoryOperationBundle:Operation:editReplacement" }
+    methods:  [GET,POST]   
+
+operation_operation_delete_replacement:
+    path:     /{operation}/replacement/{replacement}/delete
+    defaults: { _controller: "SatisfactoryOperationBundle:Operation:deleteReplacement" } 
+    

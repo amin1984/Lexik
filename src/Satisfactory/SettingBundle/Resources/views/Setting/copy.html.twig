@@ -1,0 +1,42 @@
+
+{% extends 'SatisfactorySettingBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1> COPIER UN PARAMETRAGE</h1>
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard"  ng-controller="settingNewCtrl" id="form-operation" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <a href="{{ path('setting_index',{'group_id':1}) }}">
+                                    Retour à la liste des paramètrages
+                            </a>
+                        </div> 
+                        <form method="POST" action="{{ path('setting_copy',{'id':setting.id}) }}" >           
+                        <div class="form-group">
+                            <label class="col-sm-4">
+                                Nom du paramétrage de l'enquête à copier
+                            </label> 
+                            <div class="col-sm-3 ">
+                                <input name="name" class="form-control" type="text" placeholder="Nom paramétrage" value=""/>
+                            </div>
+                            <div class="col-sm-5">
+                                    <button  class="btn btn-setting" type="submit" title="Copier" >
+                                        <i class="fa fa-copy"></i>
+                                    </button>   
+                            </div>    
+                        </div> 
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--main content end--> 
+    {#{% include 'SatisfactorySettingBundle:js:settingNew.js.twig' %}#}
+{% endblock %}

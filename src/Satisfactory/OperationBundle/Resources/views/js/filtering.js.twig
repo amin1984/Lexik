@@ -1,0 +1,23 @@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#example').DataTable({
+            "aaSorting": [[5, "asc"]],
+            'aoColumnDefs': [{
+                    "bSortable": false,
+                    "aTargets": [4, 7]
+                }],
+            "bLengthChange": false,
+            "bPaginate": false,
+            "filter": false
+        });
+        $("div:empty").remove();
+        $("#example_info").parent().remove();
+        $("#example_paginate").css('float', 'left');
+    });
+
+    function filteringCtrl() {
+
+    }
+
+</script>    

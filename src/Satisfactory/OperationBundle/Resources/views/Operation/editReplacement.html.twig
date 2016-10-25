@@ -1,0 +1,340 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>PARAMETRAGE DE L'OPERATION - REMPLACEMENT DE CARACTERES</h1>
+    </div>
+    <!--main content start-->
+    <section id="form-user" ng-app="neuboard" ng-controller="operationReplacementCtrl" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a href="{{ path('operation_dealing_edit',{'id': operation.dealing.id}) }}">
+                            <button type="button" class="btn btn-info btn-xs">
+                                <i class="fa fa-arrow-left"></i> 
+                                Retour à la page d'édition du traitement  {{ operation.dealing.name }}  
+                            </button> 
+                        </a> 
+
+                        <!--Accordion Start-->
+                        <div class="panel-group accordion " id="accordion">
+                            {% for key,edit_form_replace in edit_form_replacements %}
+                                <div class="panel panel-default" id="accordion{{ key }}">
+                                    <div class="panel-heading" >
+                                        <h4 class="panel-title">
+                                            <a ng-init="count1=0" ng-click="count1=count1+1" data-toggle="collapse" data-parent="#accordion{{ key }}" href="#collapse{{ key }}" class="collapsed">
+                                                <i ng-class="count1%2==0 ? 'fa fa-chevron-up' : 'fa fa-chevron-down' " ></i>
+                                                Remplacement - {{ edit_form_replace.replaceName.vars.value }}
+
+                                            </a>
+                                            {% set id=edit_form_replace.vars.value.id %}
+                                            <a  title="Supprimer"  class="badge badge-info floatright" type="button" data-target="#deleteConcat{{ id }}" data-toggle="modal">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                             <span class="floatright">&nbsp;</span>  
+                                            {% if(edit_form_replace.status.vars.data) %}
+                                                <i class="fa fa-check-circle ng-scope floatright" ></i>
+                                            {% else %} 
+                                                <i class="fa fa-minus-circle ng-scope floatright" ></i>
+                                            {% endif %}     
+                                            <!-- Delete Modal -->
+                                            <div  class="modal fade" id="deleteConcat{{ id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                            <h4 class="modal-title" id="myModalLabel"> Suppression </h4>
+                                                        </div>
+                                                        <div class="modal-body-delete">
+                                                            <br>
+                                                            <div class="col-sm-12">
+                                                                Êtes-vous sûr de vouloir supprimer ce remplacement ?
+                                                            </div>
+                                                            <br><br>
+                                                            <div class="col-sm-12">
+                                                                <br>
+                                                                <a href="{{ path('operation_operation_delete_replacement',{'operation': operation.id,'replacement': edit_form_replace.vars.value.id}) }}" >
+                                                                    <button  type="button" class="btn btn-primary" >Oui</button>
+                                                                </a>
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>        
+                                            <!-- End Delete Modal --> 
+                                        </h4>
+                                    </div>
+                                    <div id="collapse{{ key }}" class="panel-collapse collapse ">
+                                        <div class="panel-body">
+                                            <div class="form-group">
+
+                                                {{ form_start(edit_form_replace, {'id': 'editForm','method': 'post', 'action': path('operation_operation_edit_replacement',{'operation': operation.id,'id': edit_form_replace.vars.value.id }), 'attr': {'class': 'form-horizontal form-border editForm'} }) }}
+                                                
+                                                <div class="form-group">
+                                                    <div class="col-sm-12 inline">
+                                                        {{ form_widget(edit_form_replace.status, { 'attr': {'class': ''} }) }} Actif
+                                                    </div>
+                                                    <label class="col-sm-12 label-margin-bottom">
+                                                        Nom interne de ce remplacement *
+                                                    </label>
+                                                    <div class="col-sm-6 {% if (edit_form_replace.replaceName.vars.errors | length > 0) %} has-error {% endif %}">
+                                                        {{ form_widget(edit_form_replace.replaceName, { 'attr': {'class': 'form-control'} }) }}
+
+                                                        {% for error in edit_form_replace.replaceName.vars.errors %}
+                                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                        {% endfor %}
+                                                    </div>
+
+                                                    <div class="col-sm-8 {% if (edit_form_replace.replaceColumns.vars.errors | length > 0) %} has-error {% endif %}">
+                                                        <label class="label-margin-header">
+                                                            Choisir les colonnes sur lesquelles vont porter le remplacement (nom des colonnes séparées par ";") :
+                                                            {% for error in edit_form_replace.replaceColumns.vars.errors %}
+                                                                <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                            {% endfor %}
+                                                        </label>
+                                                        {{ form_widget(edit_form_replace.replaceColumns, { 'attr': {'class': 'form-control','name':'replaceColumns'} }) }}
+
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        Choisir le ou les type(s) de remplacement à effectuer :
+
+                                                    </div>  
+                                                    <div class="col-sm-12 {% if (edit_form_replace.replaceUppercase.vars.errors | length > 0) %} has-error {% endif %}">
+                                                        {{ form_widget(edit_form_replace.replaceUppercase, { 'attr': {'name':'replaceUppercase','type':'number'} }) }}
+                                                        Tout mettre en majuscule
+                                                        {% for error in edit_form_replace.replaceUppercase.vars.errors %}
+                                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                        {% endfor %}
+                                                     </div>
+                                                    <div class="col-sm-12 {% if (edit_form_replace.replaceLowercase.vars.errors | length > 0) %} has-error {% endif %}">
+                                                        {{ form_widget(edit_form_replace.replaceLowercase, { 'attr': {'name':'replaceLowercase','type':'number'} }) }}
+                                                        Tout mettre en minuscule
+                                                        {% for error in edit_form_replace.replaceLowercase.vars.errors %}
+                                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="col-sm-12 {% if (edit_form_replace.replaceCapitalize.vars.errors | length > 0) %} has-error {% endif %}">
+                                                        {{ form_widget(edit_form_replace.replaceCapitalize, { 'attr': {'name':'replaceCapitalize','type':'number'} }) }}
+                                                        Mettre au format "nom propre" (forcer la mise en majuscule sur la 1ère lettre et forcer la mise en minuscule sur le reste)
+                                                        {% for error in edit_form_replace.replaceCapitalize.vars.errors %}
+                                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                        {% endfor %}
+
+                                                    </div>
+                                                    <div class="col-sm-12 {% if (edit_form_replace.replaceReplace.vars.errors | length > 0) %} has-error {% endif %}">
+                                                        {{ form_widget(edit_form_replace.replaceReplace, { 'attr': {'class':'replaceReplace','name':'replaceReplace','type':'number'} }) }}
+                                                        Remplacement de caractères :
+                                                        {% for error in edit_form_replace.replaceReplace.vars.errors %}
+                                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="col-sm-12 col-sm-offset-0 replacementBlock">
+                                                        <div class="col-sm-6 {% if (edit_form_replace.replaceStringToReplace.vars.errors | length > 0) %} has-error {% endif %}">
+                                                            <label class="label-margin-header">
+                                                                Chaîne de caractères à remplacer*
+                                                                {% for error in edit_form_replace.replaceStringToReplace.vars.errors %}
+                                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                                {% endfor %}
+                                                            </label>
+                                                            {{ form_widget(edit_form_replace.replaceStringToReplace, { 'attr': {'class': 'form-control','name':'replaceColumns'} }) }}
+
+                                                            La syntaxe des wildcards est :<br />
+                                                            - commence par toto : toto*<br />
+                                                            - termine par toto : *toto<br />
+                                                            - ne commence pas par : { {!toto} }*<br />
+                                                            - ne termine pas par : *{ {!toto} }<br />
+                                                            - contient : *toto*<br />
+                                                            - ne contient pas : { {!*toto*} }
+                                                        </div>
+                                                        <div class="col-sm-6 {% if (edit_form_replace.replaceStringToReplaceFormat.vars.errors | length > 0) %} has-error {% endif %}">
+                                                            <label class="label-margin-header">&nbsp;</label>
+                                                            {{ form_widget(edit_form_replace.replaceStringToReplaceFormat, { 'attr': {'class': 'radio replaceStringToReplaceFormat','name':'replaceColumns'} }) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12 col-sm-offset-0 replacementBlock">
+                                                        <div class="col-sm-6 {% if (edit_form_replace.replaceReplacement.vars.errors | length > 0) %} has-error {% endif %}">
+                                                            <label class="label-margin-header">
+                                                                Remplacer par (laisser vide pour remplacer par rien)
+                                                                {% for error in edit_form_replace.replaceReplacement.vars.errors %}
+                                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                                {% endfor %}
+                                                            </label>
+                                                            {{ form_widget(edit_form_replace.replaceReplacement, { 'attr': {'class': 'form-control','name':'replaceColumns'} }) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12 col-sm-offset-0 replacementBlock replaceReplacementFormat">
+                                                        <div class="col-sm-12 {% if (edit_form_replace.replaceReplacementFormat.vars.errors | length > 0) %} has-error {% endif %}">
+                                                            {{ form_widget(edit_form_replace.replaceReplacementFormat, { 'attr': {'class': 'radio','name':'replaceColumns'} }) }}
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                                        
+                                                        
+                                                <div class="col-sm-offset-0 col-sm-6">
+                                                    <button  type="submit" class="btn btn-primary" >
+                                                        <i class="fa fa-save"></i> Modifier
+                                                    </button>
+                                                </div>
+
+                                                {{ form_end(edit_form_replace) }} 
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}                  
+                        </div>
+                        <!--Accordion end--> 
+
+                        {{ form_start(edit_form, {'method': 'post', 'action': path('operation_operation_edit',{'id': operation.id }), 'attr': {'id': 'newForm','class': 'form-horizontal form-border'} }) }}
+
+                        <div class="form-group">
+                            <br>
+                            <label class="col-sm-12 label-margin-bottom">
+                                Descriptif court pour identifier l'opération :
+                            </label>
+                            <div class="col-sm-6 {% if (edit_form_operation.description.vars.errors | length > 0) %} has-error {% endif %}">
+                                {{ form_widget(edit_form_operation.description, { 'attr': {'class': 'form-control'} }) }}
+
+                                {% for error in edit_form_operation.description.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                                <div class="col-sm-12 checkbox">
+                                    Opération actif ?{{ form_widget(edit_form_operation.status) }} 
+                                </div>
+                            </div>  
+                        </div>  
+
+                        <div class="form-group">
+                            <div class="col-sm-12  col-sm-offset-0">
+                                <label class="col-sm-12 label-margin-bottom">
+                                    <strong>Ajouter un nouveau remplacement :</strong>
+                                </label>
+                                <br>
+                                <label class="col-sm-12 label-margin-bottom">
+                                    Nom interne de ce remplacement *
+                                </label>
+                                <div class="col-sm-6 {% if (edit_form.replaceName.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(edit_form.replaceName, { 'attr': {'class': 'form-control'} }) }}
+
+                                    {% for error in edit_form.replaceName.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="col-sm-8 {% if (edit_form.replaceColumns.vars.errors | length > 0) %} has-error {% endif %}">
+                                    <label class="label-margin-header">
+                                        Choisir les colonnes sur lesquelles vont porter le remplacement (nom des colonnes séparées par ";") :
+                                        {% for error in edit_form.replaceColumns.vars.errors %}
+                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                        {% endfor %}
+                                    </label>
+                                    {{ form_widget(edit_form.replaceColumns, { 'attr': {'class': 'form-control','name':'replaceColumns'} }) }}
+
+                                </div>
+                                <div class="col-sm-12">
+                                    Choisir le ou les type(s) de remplacement à effectuer :
+
+                                </div>  
+                                <div class="col-sm-12 {% if (edit_form.replaceUppercase.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(edit_form.replaceUppercase, { 'attr': {'name':'replaceUppercase','type':'number'} }) }}
+                                    Tout mettre en majuscule
+                                    {% for error in edit_form.replaceUppercase.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                 </div>
+                                <div class="col-sm-12 {% if (edit_form.replaceLowercase.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(edit_form.replaceLowercase, { 'attr': {'name':'replaceLowercase','type':'number'} }) }}
+                                    Tout mettre en minuscule
+                                    {% for error in edit_form.replaceLowercase.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-sm-12 {% if (edit_form.replaceCapitalize.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(edit_form.replaceCapitalize, { 'attr': {'name':'replaceCapitalize','type':'number'} }) }}
+                                    Mettre au format "nom propre" (forcer la mise en majuscule sur la 1ère lettre et forcer la mise en minuscule sur le reste)
+                                    {% for error in edit_form.replaceCapitalize.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+
+                                </div>
+                                <div class="col-sm-12 {% if (edit_form.replaceReplace.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(edit_form.replaceReplace, { 'attr': {'name':'replaceReplace','type':'number'} }) }}
+                                    Remplacement de caractères :
+                                    {% for error in edit_form.replaceReplace.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-sm-12 col-sm-offset-0 replacementBlock">
+                                    <div class="col-sm-6 {% if (edit_form.replaceStringToReplace.vars.errors | length > 0) %} has-error {% endif %}">
+                                        <label class="label-margin-header">
+                                            Chaîne de caractères à remplacer*
+                                            {% for error in edit_form.replaceStringToReplace.vars.errors %}
+                                                <span class="alert alert-danger-form">{{ error.message }}</span>
+                                            {% endfor %}
+                                        </label>
+                                        {{ form_widget(edit_form.replaceStringToReplace, { 'attr': {'class': 'form-control','name':'replaceColumns'} }) }}
+
+                                        La syntaxe des wildcards est :<br />
+                                        - commence par toto : toto*<br />
+                                        - termine par toto : *toto<br />
+                                        - ne commence pas par : { {!toto} }*<br />
+                                        - ne termine pas par : *{ {!toto} }<br />
+                                        - contient : *toto*<br />
+                                        - ne contient pas : { {!*toto*} }
+                                    </div>
+                                    <div class="col-sm-6 {% if (edit_form.replaceStringToReplaceFormat.vars.errors | length > 0) %} has-error {% endif %}">
+                                        <label class="label-margin-header">&nbsp;</label>
+                                        {{ form_widget(edit_form.replaceStringToReplaceFormat, { 'attr': {'class': 'radio replaceStringToReplaceFormat','name':'replaceColumns'} }) }}
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-sm-offset-0 replacementBlock" >
+                                    <div class="col-sm-6 {% if (edit_form.replaceReplacement.vars.errors | length > 0) %} has-error {% endif %}">
+                                        <label class="label-margin-header">
+                                            Remplacer par (laisser vide pour remplacer par rien)
+                                            {% for error in edit_form.replaceReplacement.vars.errors %}
+                                                <span class="alert alert-danger-form">{{ error.message }}</span>
+                                            {% endfor %}
+                                        </label>
+                                        {{ form_widget(edit_form.replaceReplacement, { 'attr': {'class': 'form-control','name':'replaceColumns'} }) }}
+                                    </div>
+                                    <div class="col-sm-12 col-sm-offset-0">
+                                        <div class="col-sm-12 {% if (edit_form.replaceReplacementFormat.vars.errors | length > 0) %} has-error {% endif %}">
+                                            {{ form_widget(edit_form.replaceReplacementFormat, { 'attr': {'class': 'radio replaceReplacementFormat','name':'replaceColumns'} }) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                     Replacement actif ? {{ form_widget(edit_form.status) }}
+                                </div>
+                            </div>
+                        </div> 
+                        
+                        
+                        
+                        
+                        
+                        
+                        <div class="col-sm-offset-0 col-sm-12">
+                            <button  type="submit" class="btn btn-primary" >
+                                <i class="fa fa-save"></i> Ajouter
+                            </button>
+                        </div>
+                        {{ form_end(edit_form) }}  
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>                  
+</section>
+
+{% include 'SatisfactoryOperationBundle:js:operationEditReplacement.js.twig'%}
+{% endblock %}
+

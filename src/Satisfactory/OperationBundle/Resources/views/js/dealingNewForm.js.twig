@@ -1,0 +1,219 @@
+<script type="text/javascript">
+
+    var $collectionHolder;
+    // setup an "add a tag" link (NOTIFICATIONS EMAIL)
+    var $addTagLink = $('<button  class="btn btn-primary notifcation"><i class="fa fa-plus"></i></button>');
+    var $newLinkLi = $('<li></li>').append($addTagLink);
+
+    jQuery(document).ready(function () {
+
+        // Get the ul that holds the collection of tags
+        $collectionHolder = $('ul.tags');
+
+        // add a delete link to all of the existing tag form li elements
+        $collectionHolder.find('li').each(function () {
+            addTagFormDeleteLink($(this));
+        });
+
+        // add the "add a tag" anchor and li to the tags ul
+        $collectionHolder.append($newLinkLi);
+
+        // count the current form inputs we have (e.g. 2), use that as the new
+        // index when inserting a new item (e.g. 2)
+        $collectionHolder.data('index',               {{ nbNotif }} +$collectionHolder.find(':input').length);
+
+        $addTagLink.on('click', function (e) {
+            // prevent the link from creating a "#" on the URL
+            e.preventDefault();
+
+            // add a new tag form (see next code block)
+            addTagForm($collectionHolder, $newLinkLi);
+        });
+    });
+
+    function addTagForm($collectionHolder, $newLinkLi) {
+        // Get the data-prototype explained earlier
+        var prototype = $collectionHolder.data('prototype');
+
+        // get the new index
+        var index = $collectionHolder.data('index');
+
+        // Replace '__name__' in the prototype's HTML to
+        // instead be a number based on how many items we have
+        var newForm = prototype.replace(/__name__/g, index);
+
+        // increase the index with one for the next item
+        $collectionHolder.data('index', index + 1);
+
+        // Display the form in the page in an li, before the "Add a tag" link li
+        var $newFormLi = $('<li></li>').append(newForm);
+        $newLinkLi.before($newFormLi);
+
+        // add a delete link to the new form
+        addTagFormDeleteLink($newFormLi, index);
+    }
+
+    function addTagFormDeleteLink($tagFormLi) {
+        var $removeFormA = $('<button   class="btn btn-primary"><i class="fa fa-times"></i></button>');
+        $tagFormLi.append($removeFormA);
+
+        $removeFormA.on('click', function (e) {
+            // prevent the link from creating a "#" on the URL
+            e.preventDefault();
+
+            // remove the li for the tag form
+            $tagFormLi.remove();
+            $('.delete-alert').remove();
+        });
+    }
+
+    function dealingFormCtrl($scope, $http) {
+
+        // Compressed file
+        $scope.compressionFile = 'O-T';
+        $scope.type = 1;
+        if ('{{ form.isCompressed.vars.value }}' == 1 || '{{ form.compressionFile.vars.errors | length > 0 }}' || '{{ form.compressionFormat.vars.errors | length > 0 }}') {
+            $scope.type = 1;
+            $scope.show = true;
+            $scope.showWildcard = false;
+        } else {
+            $scope.type = 0;
+            $scope.show = false;
+            $scope.showWildcard = true;
+        }
+        $scope.typeValue = function (value) {
+            if (value == 1) {
+                $scope.show = true;
+                $scope.showWildcard = false;
+                if ('{{ form.compressionFile.vars.value }}' == 'O-T')
+                    $('#dealing_compressionFile').attr('value', '');
+            } else {
+                $scope.show = false;
+                $scope.showWildcard = true;
+                $scope.compressionFile = 'O-T';
+            }
+        };
+
+        $scope.notificationDelete = function (url) {
+            $http({
+                url: url,
+                method: "GET",
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $('#notification' + data.id).addClass('hidden');
+            });
+        };
+
+        //Checked "Quotidienne / hebdomadaire" (RÉCURRENCE)
+        $("#dealing_recurence_0").prop("checked", true);
+
+
+        //Hour:Minute  by not 10 (RÉCURRENCE)
+        for (var i = 0; i < 60; i++)
+        {
+            if ((i % 5) != 0)
+            {
+                $('#dealing_timeDay_minute option[value="' + i + '"]').remove();
+                $('#dealing_timeMonth_minute option[value="' + i + '"]').remove();
+            }
+        }
+
+        //Other button radio (STRUCTURE DU FICHIER ENTRANT À TRAITER)
+        $('#dealing_sepa_0').change(function () {
+            $('#other').addClass('hidden');
+            $('#dealing_other').val("other");
+        });
+        $('#dealing_sepa_1').change(function () {
+            $('#other').addClass('hidden');
+            $('#dealing_other').val("other");
+        });
+        $('#dealing_sepa_2').change(function () {
+            $('#other').addClass('hidden');
+            $('#dealing_other').val("other");
+        });
+        $('#dealing_sepa_3').change(function () {
+            $('#other').addClass('hidden');
+            $('#dealing_other').val("other");
+        });
+        $('#dealing_sepa_4').change(function () {
+            $('#other').removeClass('hidden');
+            $('#dealing_other').val("");
+        });
+        if ($('#dealing_sepa_4').is(':checked')) {
+            $('#other').removeClass('hidden');
+        }
+        ;
+
+
+
+        //File Header
+        $('#dealing_isFileHeader').change(function () {
+            if ($(this).is(':checked')) {
+                $('#addFileHeader').removeClass('hidden');
+                //$('#dealing_fileHeader').val('');
+            } else {
+                $('#addFileHeader').addClass('hidden');
+                //$('#dealing_fileHeader').val('O-T');
+            }
+        });
+        //If checked 
+        if ($('#dealing_isFileHeader').is(':checked')) {
+            $('#addFileHeader').removeClass('hidden');
+            //if ($('#dealing_fileHeader').val() == 'O-T')
+            //$('#dealing_fileHeader').val('');
+        }
+
+
+
+    }
+
+    // ajouter la selection automatique du virgule comme separateur
+    (function ($) {
+        $("#dealing_sepa_2").prop("checked", true);
+    })(jQuery);
+
+
+    /********************* CODE POUR LE BOUTON "VERIFIER LE FICHIER CSV" ************************************/
+    (function ($) {
+        $(".verify-csv").click(function () {
+            $('.verifycsv-text').show();
+            $('.verify-csv').addClass('disabled');
+    {#            $('.dealing-submit').hide();#}
+                var message = "";
+                $.post(
+                        "{{ path('operation_dealing_verifycsv') }}",
+                        {data: $("#form-new-dealing").serialize()})
+                        .success(function (data) {
+    {#                alert(data);#}
+                            var obj = jQuery.parseJSON(data);
+                            var error = false;
+                            $.each(obj, function (key, value) {
+                                if (value.status == "warning")
+                                    error = true;
+                                message += '<div class="alert alert-' + value.status + '">';
+                                message += value.message;
+                                message += '</div>';
+                            });
+                            if (error == false) {
+    {#                    $('.dealing-submit').show();#}
+                            }
+                            $('.verify-csv').removeClass('disabled');
+                            $('.verifycsv-text').hide();
+
+                            $('#verifycsv-message').html(message);
+                            $('#verifycsv').modal();
+                            $('#verifycsv').modal({keyboard: false});
+                            $('#verifycsv').modal('show');
+                        })
+                        .error(function (data) {
+                            $('.verify-csv').removeClass('disabled');
+    {#                $('.dealing-submit').hide();#}
+                        })
+                        ;
+            })
+        })(jQuery);
+
+        /********************* FIN CODE POUR LE BOUTON "VERIFIER LE FICHIER CSV" ************************************/
+
+
+</script>    

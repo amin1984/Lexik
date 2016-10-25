@@ -1,0 +1,176 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>LISTE DES REJETS</h1>
+    </div>
+    <section ng-app="neuboard"  ng-controller="rejectCtrl" id="main-content" class="animated fadeInRight">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a href="{{ path('operation_reject_new') }}">
+                            <button  class="btn btn-primary btn-lg floatleft">
+                                <i class="fa fa-plus"></i> Créer un nouveau rejet
+                            </button>
+                        </a>
+                        <br><br><br>
+                        <label class="col-md-12">Rechercher un rejet :</label>
+
+                        <div class="col-md-6">
+                            <input  type="text" class="form-control" ng-change="inputSearch()" ng-model="inputValue" >
+                        </div>
+                        <div class="col-md-12">&nbsp;</div>
+                        <div class="col-md-6">
+                            <select  class="form-control col-md-6"  ng-model='form.type' ng-change="clientSearch()"  ng-options="option.id as option.name for option in clients"> 
+
+                            </select>  
+                        </div>
+                        <div class="col-md-12">&nbsp;</div> 
+                        <div class="col-md-12">
+                            <div class="radio"  >
+                                <input   type="radio"  value="all" ng-model="type" ng-change='typeValue(type)'>
+                                <label>Tous</label>
+                                <input type="radio"  value="Sollicitation" ng-model="type" ng-change='typeValue(type)'>
+                                <label>Sollicitation</label>
+                                <input  type="radio" value="Blackliste" ng-model="type" ng-change='typeValue(type)'>
+                                <label>Blackliste</label>
+                                <input type="radio" value="Quota" ng-model="type" ng-change='typeValue(type)'>
+                                <label>Quota</label>
+                            </div><br>
+                        </div>
+                        <div class="col-md-12">&nbsp;</div>          
+
+                        <table  id="example" class="table table-striped table-bordered" datatable="" cellspacing="0" >
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('id')">
+                                            Id
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('type')">
+                                            Type
+                                        </a>
+                                    </th>
+                                    <th>Nom du client</th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('ruleName')">
+                                            Nom rejet
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('creatorName')">
+                                            Créé par
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('updatedAt')">
+                                            Dernière mise à jour
+                                        </a>
+                                    </th>
+                                    <th>Utilisation</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>   
+
+                            <tbody ng-repeat="reject in rejects">
+
+                                <tr>
+                                    <td>{{ '{{ reject.id }}' }}</td>
+                                    <td>{{ '{{ reject.type }}' }}</td>
+                                    <td>{{ '{{ reject.client }}' }}</td>
+                                    <td>{{ '{{ reject.name }}' }}</td>
+                                    <td>{{ '{{ reject.creatorName }}' }}</td>
+                                    <td>{{ '{{ reject.updatedAt }}' }}</td>
+                                    <td></td>
+                                    <td>
+                                        <a title="Editer" href="{{ '{{ reject.pathEdit }}' }}">
+                                            <button  class="btn btn-default" type="button" >
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                        </a>   
+                                        <button title="Supprimer" class="btn btn-default" type="button" data-target="#rejectDelete{{ '{{ reject.id }}' }}" data-toggle="modal">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                        <!-- rejectDelete Modal -->
+                                        <div  class="modal fade" id="rejectDelete{{ '{{ reject.id }}' }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title" id="myModalLabel"> Suppression </h4>
+                                                    </div>
+                                                    <div class="modal-body-delete">
+
+                                                        <div ng-if="reject.operations.length == 0 ">
+                                                            <br>
+                                                            <div class="col-sm-12">
+                                                                Êtes-vous sûr de vouloir supprimer ce rejet ?
+                                                            </div>
+                                                            <br><br>
+                                                            <div class="col-sm-12">
+                                                                <a href="{{ '{{ reject.pathDelete }}' }}">
+                                                                    <button  type="button" class="btn btn-primary" >Oui</button>
+                                                                </a>
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                                                            </div>
+                                                        </div>
+                                                        <div ng-if="reject.operations.length != 0 " class="col-sm-12">            
+                                                            <div class="col-sm-12">
+                                                                <strong>Ce rejet ne peut pas être supprimé!</strong> 
+                                                                <br><br>
+                                                                Liste des opérations
+                                                                <br><br>
+                                                                <div>
+                                                                    <div ng-repeat="operation in reject.operations" >
+                                                                        <a href="{{ '{{ reject.pathOperation }}' }}" title="{{ '{{ operation.name }}' }}"  data-id="1">
+                                                                            {{ '{{ operation.name }}' }} &nbsp; 
+                                                                        </a>
+                                                                    </div>  
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <br><br><br>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>        
+                                        <!-- End rejectDelete Modal -->   
+                                    </td>
+                                </tr>  
+                            </tbody>    
+                        </table>
+                        {# Display pagination #}           
+                        <div  class="pagination" ng-if="pages > 1">
+                            <span  ng-if="current != 1" class="previous" ng-click="selectedLastPage(current-1)">
+                                <a href="">&lt;&lt;</a>
+                            </span>
+
+                            <span ng-repeat="(key, page) in range(1,pages)"  ng-class="(page == current) ? 'current' : ''" ng-click="selectedPage(page)">
+                                <a href="">
+                                    {{ '{{ page }}' }} 
+                                </a>
+                            </span>
+
+                            <span ng-if="current != pages" class="next" ng-click="selectedNextPage(current+1)">
+                                <a href="">&gt;&gt;</a>
+                            </span> 
+                        </div>
+                        {# End display pagination #}
+                        <div ng-if="pages == 0">
+                            Aucun élément sélectionné
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'SatisfactoryOperationBundle:js:reject.js.twig' %}                        
+{% endblock %}        
+
+

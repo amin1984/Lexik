@@ -1,0 +1,24 @@
+<script type="text/javascript">
+
+    function operationEditPublishCtrl() {
+        
+        if ($('#operation_publish_publishHost').val() == 'O-T')
+            $('#operation_publish_publishHost').val('');
+        if ($('#operation_publish_publishPort').val() == 0)
+            $('#operation_publish_publishPort').val('');
+        if ($('#operation_publish_publishLogin').val() == 'O-T')
+            $('#operation_publish_publishLogin').val('');
+        if ($('#operation_publish_publishPassword').val() == 'O-T')
+            $('#operation_publish_publishPassword').val('');
+        if ($('#operation_publish_publishFileName').val() == 'O-T')
+        {
+            $('#operation_publish_publishFileName').val('');
+            $('#operation_publish_status').attr('checked', 'checked');
+        }
+        
+        //Password
+        $('#operation_publish_publishPassword').val('{{operation.publishPassword}}');
+    }
+
+
+</script>    

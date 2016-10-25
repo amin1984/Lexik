@@ -1,0 +1,4 @@
+services:
+#    satisfactory_operation.example:
+#        class: Satisfactory\OperationBundle\Example
+#        arguments: ["@service_id", "plain_value", %parameter%]

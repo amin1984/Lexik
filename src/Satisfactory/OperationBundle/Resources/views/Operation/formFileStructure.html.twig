@@ -1,0 +1,102 @@
+<div class="panel-heading">
+    <h4 class="panel-title">
+        <a ng-init="count2=0" ng-click="count2=count2+1" class="collapsed" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+            STRUCTURE DU FICHIER ENTRANT À TRAITER ET PREREQUIS
+            <i ng-class="count2%2==0 ? 'fa fa-chevron-up' : 'fa fa-chevron-down' " class="floatright"></i>
+        </a>
+    </h4>
+</div>
+<div id="collapseTwo" class="panel-collapse collapse {% if(form.other.vars.errors | length > 0 or form.fileHeader.vars.errors | length > 0 ) %} in {% endif %}">
+    <div class="panel-body">
+        <div class="col-sm-5">
+            <label class="">Séparateur : </label>
+        </div> 
+        <div class="col-sm-5 radio" >
+            {{ form_widget(form.sepa, { 'attr': {'class': ''} }) }}
+            {% for error in form.sepa.vars.errors %}
+                <span class="alert alert-danger-form">{{ error.message }}</span>
+            {% endfor %}
+        </div> 
+        <div id="other" class="col-sm-2 hidden {% if (form.other.vars.errors | length > 0) %} has-error {% endif %}">
+            {{ form_widget(form.other, { 'attr': {'class': 'form-control'} }) }} 
+            {% for error in form.other.vars.errors %}
+                <span class="alert alert-danger-form">{{ error.message }}</span>
+            {% endfor %}
+        </div>
+        <br><br>
+        <div class="col-sm-5">
+            <label class="">Les informations de sorite sont entourées par des guillemets (") ?</label>
+        </div> 
+        <div class="col-sm-7 radio">
+            {{ form_widget(form.quotation, { 'attr': {'class': ''} }) }}
+            {% for error in form.quotation.vars.errors %}
+                <span class="alert alert-danger-form">{{ error.message }}</span>
+            {% endfor %}
+        </div>  
+        <br><br>
+        <div class="col-sm-5">
+            <label class="">Encodage du fichier :</label>
+        </div> 
+        <div class="col-sm-4">    
+            {{ form_widget(form.encoding, { 'attr': {'class': 'form-control'} }) }}
+            {% for error in form.encoding.vars.errors %}
+                <span class="alert alert-danger-form">{{ error.message }}</span>
+            {% endfor %}
+        </div> 
+        <br><br>
+        <div class="col-sm-5">
+            <label class="">Nombre de lignes à supprimer en début de fichier :</label>
+        </div> 
+        <div class="col-sm-4">    
+            {{ form_widget(form.nbLigneToDelete, { 'attr': {'class': 'form-control'} }) }}
+            {% for error in form.nbLigneToDelete.vars.errors %}
+                <span class="alert alert-danger-form">{{ error.message }}</span>
+            {% endfor %}
+        </div>
+        <br><br>
+        <div class="col-sm-5">
+            <label class="">Le fichier ne présente pas de ligne d'en-tête :</label>
+        </div> 
+        <div class="col-sm-4">    
+            {{ form_widget(form.isFileHeader) }}
+        </div> 
+        <div id="addFileHeader" class="hidden">
+            <br><br>
+            <div class="col-sm-12">
+                <p>
+                    Par défaut un index de colonne est attribué à chaque colonne sous la forme colonne_1 ; colonne_2 etc…
+                    Vous pouvez modifier cela si vous le souhaitez en uploader un fichier à double entrée (séparateur ;), sans entête, pour indiquer des noms de colonnes personnalisés.
+                </p>
+            </div> 
+            <div class="col-sm-5">
+                <label class="">
+                    Attribution de noms de colonnes :
+                </label>
+            </div> 
+            <div class="col-sm-4 {% if (form.fileHeader.vars.errors | length > 0) %} has-error {% endif %}">    
+                {{ form_widget(form.fileHeader, { 'attr': {'class': 'form-control'} }) }}
+                {% for error in form.fileHeader.vars.errors %}
+                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                {% endfor %}
+            </div>
+            {% set url = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))|split('/') %}
+            {% if('edit' in url) %}
+                <div class="col-sm-12">
+                    {% set tab = form.fileHeader.vars.value|split(';') %}
+                    {% for key, value in tab %}
+                        Colonne {{ key+1 }} : {{ value }} <br>
+                    {% endfor %}
+                    {#{% dump(tab) %}#}
+                </div>    
+            {% endif %} 
+            <br><br>
+        </div>
+        <br><br>
+        <div class="col-sm-5">
+            <label class="">Suppression du ; final dans l'en-tête :</label>
+        </div> 
+        <div class="col-sm-4">    
+            {{ form_widget(form.deleteSemicolon) }}
+        </div>     
+    </div>
+</div>

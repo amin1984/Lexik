@@ -1,0 +1,32 @@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("div:empty").remove();
+        $("#example_info").parent().remove();
+        $("#example_paginate").css('float', 'left');
+    });
+
+    function logOperationCtrl($scope, $http) {
+
+        
+       // First Page
+        $http({
+            url: '{{ path('satisfactory_cron_log_operation_ajax') }}',
+            method: "GET",
+            params: {'cronexecution': {{ cronexecution }} },
+            headers: {'Content-Type': 'application/json'}
+        }).success(function (data) {
+            $scope.logOperation = data.logOperation;
+            $scope.dealingName = data.dealingName;
+            $scope.running = data.running;
+            $scope.ecxecutionTime = data.ecxecutionTime;
+            $scope.nbLineIn = data.nbLineIn;
+            $scope.nbLineOut = data.nbLineOut;
+            $scope.dealing = data.dealing;
+            $scope.dealingDate = data.dealingDate;
+            $scope.isExecutedManually = data.isExecutedManually;
+        });
+    }
+
+</script>    

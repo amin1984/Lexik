@@ -1,0 +1,282 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1> PARAMETRAGE DE L'OPERATION - MODIFIER LA STRUCTURE </h1>
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard"  ng-controller="operationEditModifyCtrl" id="form-operation" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a href="{{ path('operation_dealing_edit',{'id': operation.dealing.id}) }}">
+                            <button type="button" class="btn btn-info btn-xs">
+                                <i class="fa fa-arrow-left"></i> 
+                                Retour à la page d'édition du traitement {{ operation.dealing.name }}
+                            </button> 
+                        </a>  
+                        <br>    
+                        {{ form_start(edit_form, {'method': 'post', 'action': path('operation_operation_edit',{'id': operation.id }), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <br>
+                            <label class="col-sm-12 label-margin-bottom">
+                                Descriptif court pour identifier l'opération :
+                            </label>
+                            <div class="col-sm-12 {% if (edit_form.description.vars.errors | length > 0) %} has-error {% endif %}">
+                                {{ form_widget(edit_form.description, { 'attr': {'class': 'form-control',} }) }}
+
+                                {% for error in edit_form.description.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-12 {% if (edit_form.modifyStructure.vars.errors | length > 0) %} has-error {% endif %}">
+                                <label class="label-margin-bottom">
+                                    Choisir la modification de structure à appliquer : &nbsp;
+                                </label>
+                                {{ form_widget(edit_form.modifyStructure, { 'attr': {'class': 'radio',} }) }}
+                                {% for error in edit_form.modifyStructure.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-12 hidden" id="modifyRename">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Nom de la colonne à renommer*</label>
+                                            <div class="col-sm-4 {% if (edit_form.modifyNameColumnToRename.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.modifyNameColumnToRename, { 'attr': {'class': 'form-control inline'} }) }}
+                                                {% for error in edit_form.modifyNameColumnToRename.vars.errors %}
+                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Nouveau nom de colonne*</label>
+                                            <div class="col-sm-4 {% if (edit_form.modifyNameColumnRename.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.modifyNameColumnRename, { 'attr': {'class': 'form-control inline'} }) }}
+                                                {% for error in edit_form.modifyNameColumnRename.vars.errors %}
+                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 hidden" id="modifySort">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Nom de la colonne à trier*</label>
+                                            <div class="col-sm-4 {% if (edit_form.modifyNameColumnToSort.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.modifyNameColumnToSort, { 'attr': {'class': 'form-control inline'} }) }}
+                                                {% for error in edit_form.modifyNameColumnToSort.vars.errors %}
+                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Type de tri</label>
+                                            <div class="col-sm-8  {% if (edit_form.modifyTypeSort.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.modifyTypeSort, { 'attr': {'class': 'radio'} }) }}
+                                                {% for error in edit_form.modifyTypeSort.vars.errors %}
+                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>  
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="col-md-12 hidden" id="modifyAdd">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Nom de la colonne à ajouter*</label>
+                                            <div class="col-sm-4 {% if (edit_form.modifyNameColumnToAdded.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.modifyNameColumnToAdded, { 'attr': {'class': 'form-control inline'} }) }}
+                                                {% for error in edit_form.modifyNameColumnToAdded.vars.errors %}
+                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label"></label>
+                                            <div class="col-sm-6 {% if (edit_form.modifyAddedPosition.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.modifyAddedPosition, { 'attr': {'class': 'radio'} }) }}
+                                                {% for error in edit_form.modifyAddedPosition.vars.errors %}
+                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </div>
+                                            <label class="col-sm-2 {% if (edit_form.modifyNameColumnPosition.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.modifyNameColumnPosition, { 'attr': {'class': 'form-control col-sm-2 hidden'} }) }}
+                                                {% for error in edit_form.modifyNameColumnPosition.vars.errors %}
+                                                    <span id="operation_modify_modifyNameColumnPosition_error" class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </label>    
+                                        </div>   
+                                    </div>
+                                </div>
+                            </div>  
+                            <div class="col-md-12 hidden" id="modifyDelete">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Nom de la colonne à supprimer*</label>
+                                            <div class="col-sm-4 {% if (edit_form.columnToDelete.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.columnToDelete, { 'attr': {'class': 'form-control inline'} }) }}
+                                                {% for error in edit_form.columnToDelete.vars.errors %}
+                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="col-md-12 hidden" id="modifyPosition">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Changer la position de la colonne*</label>
+                                            <div class="col-sm-4 {% if (edit_form.nameColumnPosition.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.nameColumnPosition, { 'attr': {'class': 'form-control inline'} }) }}
+                                                {% for error in edit_form.nameColumnPosition.vars.errors %}
+                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label"></label>
+                                            <div class="col-sm-6 {% if (edit_form.reorderPosition.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.reorderPosition, { 'attr': {'class': 'radio'} }) }}
+                                                {% for error in edit_form.reorderPosition.vars.errors %}
+                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </div>
+                                            <label  class="col-sm-2 {% if (edit_form.reorderColumnName.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.reorderColumnName, { 'attr': {'class': 'form-control col-sm-2 hidden'} }) }}
+                                                {% for error in edit_form.reorderColumnName.vars.errors %}
+                                                    <span id="operation_modify_reorderColumnName_error" class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </label>    
+                                        </div>   
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="col-md-12 hidden" id="modifyFormat">
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Changer le format de la colonne*</label>
+                                            <div class="col-sm-4 {% if (edit_form.nameColumnFormat.vars.errors | length > 0) %} has-error {% endif %}">
+                                                {{ form_widget(edit_form.nameColumnFormat, { 'attr': {'class': 'form-control inline'} }) }}
+                                                {% for error in edit_form.nameColumnFormat.vars.errors %}
+                                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Dans quel format transporter la colonne ?</label>
+                                            <div class="col-sm-4 ">
+                                                {{ form_widget(edit_form.columnFormat, { 'attr': {'class': 'form-control inline'} }) }}
+                                            </div>
+                                        </div> 
+                                        <div id="modifyFormatPhone" >   
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Indiquer le format cible*</label>
+                                                <div class="col-sm-4">
+                                                    {{ form_widget(edit_form.targetFormatPhone.children[0], { 'attr': {'class': ''} }) }}
+                                                    Transposer au format téléphonique international
+                                                </div>
+                                            </div> 
+                                            <div class="form-group">  
+                                                <div class="col-sm-4"></div>
+                                                <div id ="countryCode">
+                                                    <label  class="col-sm-2 control-label">Indicatif pays*</label>
+                                                    <div class="col-sm-2 {% if (edit_form.countryCode.vars.errors | length > 0) %} has-error {% endif %}">
+                                                        {{ form_widget(edit_form.countryCode, { 'attr': {'class': 'form-control', 'placeholder' : ''} }) }}
+                                                        {% for error in edit_form.countryCode.vars.errors %}
+                                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                        {% endfor %}
+                                                    </div> 
+                                                    <footer  class="col-sm-4 control-label">
+                                                        Le début du numéro 01... 09 sera remplacé par +33 1... 9 si vous indiquez "33" dans ce champ (sans le "+")
+                                                    </footer>
+                                                </div> 
+                                            </div> 
+
+                                            <div class="form-group">
+                                                <div class="col-sm-4"></div>
+                                                <div class="col-sm-4">
+                                                    {{ form_widget(edit_form.targetFormatPhone.children[1], { 'attr': {'class': ''} }) }}
+                                                    Transposer dans un format manuel
+                                                </div>
+                                            </div> 
+                                            <div class="form-group">       
+                                                <div class="col-sm-4"></div> 
+                                                <div id="newFormat" class="hidden">
+                                                    <label  class="col-sm-2 control-label">Nouveau format*</label>
+                                                    <div class="col-sm-2 {% if (edit_form.newFormat.vars.errors | length > 0) %} has-error {% endif %}">
+                                                        {{ form_widget(edit_form.newFormat, { 'attr': {'class': 'form-control', 'placeholder' : ''} }) }}
+                                                        {% for error in edit_form.newFormat.vars.errors %}
+                                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <footer  class="col-sm-4 control-label">
+                                                        Chaque X sera remplacé, dans l'ordre, par les chiffre trouvé dans la données source. Vous pouvez ajouter tous les autres caractères souhaités.
+                                                    </footer>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="modifyFormatDate" class="hidden">
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Indiquer le format source*</label>
+                                                <div class="col-sm-4 {% if (edit_form.sourceFormatDate.vars.errors | length > 0) %} has-error {% endif %}">
+                                                    {{ form_widget(edit_form.sourceFormatDate, { 'attr': {'class': 'form-control'} }) }}
+                                                    {% for error in edit_form.sourceFormatDate.vars.errors %}
+                                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    ex: JJ/MM/AAAA:HH:II:SS ou JJ/MM/AA
+                                                </div>
+                                            </div> 
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">Indiquer le format cible*</label>
+                                                <div class="col-sm-4 {% if (edit_form.targetFormatDate.vars.errors | length > 0) %} has-error {% endif %}">
+                                                    {{ form_widget(edit_form.targetFormatDate, { 'attr': {'class': 'form-control'} }) }}
+                                                    {% for error in edit_form.targetFormatDate.vars.errors %}
+                                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    ex: AAAA-MM-JJ à HH:II et SS secondes
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>    
+                                </div>
+                            </div>                 
+
+                            <div class="col-sm-12">  
+                                <label class="label-margin-header">
+                                    {{ form_widget(edit_form.status , { 'attr': {'class': '' } }) }} Actif
+                                </label>  
+                            </div>                 
+                        </div>               
+                        <div class="form-group">
+                            <div class="col-sm-offset-0 col-sm-6">
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i>  Sauver
+                                </button>
+                            </div>
+                        </div> 
+                        {{ form_end(edit_form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--main content end--> 
+    {% include 'SatisfactoryOperationBundle:js:operationEditModify.js.twig' %}
+{% endblock %}

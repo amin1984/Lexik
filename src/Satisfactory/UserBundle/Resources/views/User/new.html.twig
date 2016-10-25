@@ -1,0 +1,75 @@
+{% extends 'SatisfactoryUserBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>CRÉATION D'UN CLIENT</h1>
+        {#<div class="breadcrumb-wrapper hidden-xs">
+            <span class="label">Vous êtes ici :</span>
+            <ol class="breadcrumb">
+                <li><a href="{{ path('user_index') }}">Clients</a>
+                </li>
+                <li class="active">Nouveau</li>
+            </ol>
+        </div>#}
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard" ng-controller="UserNewCtrl" id="main-content" class="animated fadeInUp">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <br>
+                    <div class="col-md-12">
+                        <a  href="{{ path('user_index') }}">
+                            <button type="button" class="btn btn-info btn-xs">
+                                <i class="fa fa-arrow-left"></i> 
+                                Retour à la liste des flux
+                            </button> 
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        {{ form_start(form, {'method': 'post', 'action': path('user_new'), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="">Nom du client *</label>
+                                {{ form_widget(form.username, { 'attr': {'ng-model': 'user.username', 'class': 'form-control','name':'username','placeholder':'Nom du client'} }) }}
+                                {% for error in form.username.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-6">
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="">Id compte Sharing-data *</label>
+                                {{ form_widget(form.sharingData, { 'attr': {'class': 'form-control','name':'sharingData','placeholder':'Id compte Sharing-data'} }) }}
+                                {% for error in form.sharingData.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div>
+                            Votre nom "{{ app.user.lastName }} {{ app.user.firstName }}" sera lié à la création du client.
+                        </div>     
+                        <br>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i> Sauver
+                                </button>
+                                <a href="{{ path('user_index') }}" class="btn btn-default">
+                                    <i class="fa fa-arrow-left"></i> Fermer sans enregistrer
+                                </a>
+                            </div>
+                        </div> 
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--main content end--> 
+{% include 'SatisfactoryUserBundle:js:newUser.js.twig'%}    
+{% endblock %}

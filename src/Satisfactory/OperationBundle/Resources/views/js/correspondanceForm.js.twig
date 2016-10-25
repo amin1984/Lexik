@@ -1,0 +1,81 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#example').DataTable({
+            "aaSorting": [[0, "asc"]],
+            "bLengthChange": false,
+            "pageLength": 50,
+            "filter": false
+        });
+    });
+
+    function correspondanceFormCtrl() {
+    }
+
+    //If checked Table Type
+    if ($('#correspondance_tableType_0').is(':checked')) {
+        $('#fixedTable').removeClass('hidden');
+        $('#dynamicTable').addClass('hidden');
+        //PRINCIPE DE RÉCUPÉRATION DU FICHIER ENTRANT
+        $("#correspondance_host").attr('value', 0);
+        $("#correspondance_port").attr('value', 0);
+        $("#correspondance_login").attr('value', 0);
+        $("#correspondance_password").attr('value', 0);
+    } else if ($('#correspondance_tableType_1').is(':checked')) {
+        $('#dynamicTable').removeClass('hidden');
+        $('#fixedTable').addClass('hidden');
+        //PRINCIPE DE RÉCUPÉRATION DU FICHIER ENTRANT
+        if ($("#correspondance_host").val() == 0)
+            $("#correspondance_host").val('');
+        if ($("#correspondance_port").val() == 0)
+            $("#correspondance_port").val('');
+        if ($("#correspondance_login").val() == 0)
+            $("#correspondance_login").val('');
+        if ($("#correspondance_password").val() == 0)
+            $("#correspondance_password").val('');
+    } else {
+        $("#correspondance_tableType_0").attr('checked', true);
+        $('#fixedTable').removeClass('hidden');
+        //PRINCIPE DE RÉCUPÉRATION DU FICHIER ENTRANT
+        $("#correspondance_host").attr('value', 0);
+        $("#correspondance_port").attr('value', 0);
+        $("#correspondance_login").attr('value', 0);
+        $("#correspondance_password").attr('value', 0);
+    }
+    //On change Table Type
+    $('#correspondance_tableType').change(function () {
+        if ($('#correspondance_tableType_0').is(':checked')) {
+            $('#fixedTable').removeClass('hidden');
+            $('#dynamicTable').addClass('hidden');
+            //PRINCIPE DE RÉCUPÉRATION DU FICHIER ENTRANT
+            $("#correspondance_host").val(0);
+            $("#correspondance_port").val(0);
+            $("#correspondance_login").val(0);
+            $("#correspondance_password").val(0);
+        } else if ($('#correspondance_tableType_1').is(':checked')) {
+            $('#dynamicTable').removeClass('hidden');
+            $('#fixedTable').addClass('hidden');
+            //PRINCIPE DE RÉCUPÉRATION DU FICHIER ENTRANT
+            if ($("#correspondance_host").val() == 0)
+                $("#correspondance_host").val('');
+            if ($("#correspondance_port").val() == 0)
+                $("#correspondance_port").val('');
+            if ($("#correspondance_login").val() == 0)
+                $("#correspondance_login").val('');
+            if ($("#correspondance_password").val() == 0)
+                $("#correspondance_password").val('');
+        } else {
+            $("#correspondance_tableType_0").attr('checked', true);
+            $('#fixedTable').removeClass('hidden');
+            //PRINCIPE DE RÉCUPÉRATION DU FICHIER ENTRANT
+            $("#correspondance_host").attr('value', 0);
+            $("#correspondance_port").attr('value', 0);
+            $("#correspondance_login").attr('value', 0);
+            $("#correspondance_password").attr('value', 0);
+        }
+    });
+    //Dynamic table Protocol
+    if ($('#correspondance_protocol').val() == '')
+        $("#correspondance_protocol_0").attr('checked', true);
+
+
+</script>    

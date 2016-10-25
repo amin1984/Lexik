@@ -1,0 +1,169 @@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#example').DataTable({
+            "aaSorting": false,
+            'aoColumnDefs': [{
+                    "bSortable": false,
+                    "aTargets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                }],
+            "bLengthChange": false,
+            "bPaginate": false,
+            "filter": false
+        });
+        $("div:empty").remove();
+        $("#example_info").parent().remove();
+        $("#example_paginate").css('float', 'left');
+    });
+
+    function dealingCtrl($scope, $http) {
+        $scope.count = 2;
+        $scope.current = 1;
+        $scope.order = 'executedAt';
+        $scope.countOrder = 1;
+        $scope.orderType = 'DESC';
+        $scope.input = null;
+        $scope.client = 'all';
+
+        // First Page
+        $http({
+            url: '{{ url }}',
+            method: "GET",
+            params: {'order': $scope.order, 'input': $scope.input, 'client': $scope.client},
+            headers: {'Content-Type': 'application/json'}
+        }).success(function (data) {
+            $scope.data = data.dealings;
+            $scope.pages = data.pages;
+            $scope.currentPage = data.currentPage;
+            $scope.urlPage = data.urlPage;
+            $scope.limit = data.limit;
+            $scope.clients = data.clients;
+            $scope.form = {type : $scope.clients[0].id};
+        });
+
+        // On selected Page
+        $scope.selectedPage = function (page) {
+            $scope.page = page;
+            $http({
+                url: '{{ path('operation_dealing_order_ajax') }}',
+                method: "GET",
+                params: {'page': page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input, 'client': $scope.client},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.data = data.dealings;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+                $scope.current = page;
+            });
+        };
+
+        // Next Page
+        $scope.selectedNextPage = function (page) {
+            $scope.page = page;
+            $http({
+                url: '{{ path('operation_dealing_order_ajax') }}',
+                method: "GET",
+                params: {'page': page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input, 'client': $scope.client},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.data = data.dealings;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+                $scope.count++;
+                $scope.current = page;
+            });
+        };
+
+        // Last Page
+        $scope.selectedLastPage = function (page) {
+            $scope.page = page;
+            $http({
+                url: '{{ path('operation_dealing_order_ajax') }}',
+                method: "GET",
+                params: {'page': page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input, 'client': $scope.client},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.data = data.dealings;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+                $scope.count--;
+                $scope.current = page;
+            });
+        };
+
+        // Order By
+        $scope.orderBy = function (order) {
+            $scope.order = order;
+            if ($scope.countOrder % 2)
+                $scope.orderType = 'DESC';
+            else
+                $scope.orderType = 'ASC';
+            $scope.countOrder++;
+
+            $http({
+                url: '{{ path('operation_dealing_order_ajax') }}',
+                method: "GET",
+                params: {'page': $scope.page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input, 'client': $scope.client},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.data = data.dealings;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+            });
+        };
+
+        // Search
+        $scope.inputSearch = function () {
+            $scope.input = this.inputValue;
+            $http({
+                url: '{{ path('operation_dealing_order_ajax') }}',
+                method: "GET",
+                params: {'page': 1,'input': $scope.input, 'client': $scope.client},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.data = data.dealings;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+                $scope.offset = data.offset;
+            });
+        };
+
+        $scope.clientSearch = function () {
+            $scope.client = $scope.form.type;
+            $http({
+                url: '{{ path('operation_dealing_order_ajax') }}',
+                method: "GET",
+                params: {'page': 1,'input': $scope.input, 'client': $scope.client},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.data = data.dealings;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+            });
+        };
+
+        // Range
+        $scope.range = function (min, max, step) {
+            step = step || 1;
+            var input = [];
+            for (var i = min; i <= max; i += step)
+                input.push(i);
+            return input;
+        };
+
+    }
+
+
+</script>    

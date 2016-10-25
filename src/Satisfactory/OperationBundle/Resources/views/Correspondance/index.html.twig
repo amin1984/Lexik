@@ -1,0 +1,152 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>LISTE DES CORRESPONDANCES</h1>
+    </div>
+    <section ng-app="neuboard"  ng-controller="correspondanceCtrl" id="main-content" class="animated fadeInRight">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="col-sm-9"> 
+                            <a href="{{ path('operation_correspondance_new') }}">
+                                <button  class="btn btn-primary btn-lg floatleft">
+                                    <i class="fa fa-plus"></i> Créer une nouvelle correspondance
+                                </button>
+                            </a>
+                            <br><br><br>   
+                            <label class="col-md-12">Rechercher une correspondance :</label>
+
+                            <div class="col-md-6">
+                                <input  type="text" class="form-control" ng-change="inputSearch()" ng-model="inputValue" >
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>
+                            <div class="col-md-6">
+                                <select  class="form-control col-md-6"  ng-model='form.type' ng-change="clientSearch()"  ng-options="option.id as option.name for option in clients"> 
+
+                                </select>  
+                            </div>
+                            <div class="col-md-12">&nbsp;</div>    
+
+                        </div>    
+                        <table  id="example" class="table table-striped table-bordered" datatable="" cellspacing="0" >
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('id')">
+                                            Id
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('name')">
+                                            Name
+                                        </a>
+                                    </th>
+                                    <th>Client</th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('creatorName')">
+                                            Créé par
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('updatedAt')">
+                                            Dernière mise à jour
+                                        </a>
+                                    </th>
+                                    <th>Utilisation</th>
+                                    <th>Nbres d'entrées</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>   
+
+                            <tbody ng-repeat=" corresp in correspondances">
+                                <tr>
+                                    <td>{{ '{{ corresp.id }}' }}</td>
+                                    <td>{{ '{{ corresp.name }}' }}</td>
+                                    <td>{{ '{{ corresp.client }}' }}</td>
+                                    <td>{{ '{{ corresp.creatorName }}' }}</td>
+                                    <td>{{ '{{ corresp.updatedAt  }}' }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <a title="Editer" href="{{ '{{ corresp.pathEdit }}' }}">
+                                            <button  class="btn btn-default" type="button" >
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                        </a>   
+                                        <button title="Supprimer"  class="btn btn-default" type="button" data-target="#correspondanceDelete{{ '{{ corresp.id }}' }}" data-toggle="modal">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                        <!-- dealingDelete Modal -->
+                                        <div  class="modal fade" id="correspondanceDelete{{ '{{ corresp.id }}' }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title" id="myModalLabel"> Suppression </h4>
+                                                    </div>
+                                                    <div ng-if=" corresp.id == IdCorrespondanceParam" class="modal-body-delete">
+                                                        <br>
+                                                        <div class="col-sm-12">
+                                                            Vous ne pouvez pas supprimer cette table de correspondance. <br />
+                                                            C'est la table de correspondance qui sera mise à jour en automatique par cron sur la base du paramétrage ERDF fait dans l'application.
+                                                        </div>
+                                                        <br><br><br>
+                                                        <div class="col-sm-12">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                                                        </div>
+                                                        <br><br><br>
+                                                    </div> 
+                                                    <div ng-if=" corresp.id != IdCorrespondanceParam" class="modal-body-delete">
+                                                        <br>
+                                                        <div class="col-sm-12">
+                                                            Êtes-vous sûr de vouloir supprimer cette correspondance ?
+                                                        </div>
+                                                        <br><br>
+                                                        <div class="col-sm-12">
+                                                            <a href="{{ '{{ corresp.pathDelete }}' }}">
+                                                                <button  type="button" class="btn btn-primary" >Oui</button>
+                                                            </a>
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                                                        </div>
+                                                        <br><br><br>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>        
+                                        <!-- End dealingDelete Modal -->   
+                                    </td>
+                                </tr>
+                            </tbody>    
+                        </table>
+                        {# Display pagination #}           
+                        <div  class="pagination" ng-if="pages > 1">
+                            <span  ng-if="current != 1" class="previous" ng-click="selectedLastPage(current-1)">
+                                <a href="">&lt;&lt;</a>
+                            </span>
+
+                            <span ng-repeat="(key, page) in range(1,pages)"  ng-class="(page == current) ? 'current' : ''" ng-click="selectedPage(page)">
+                                <a href="">
+                                    {{ '{{ page }}' }} 
+                                </a>
+                            </span>
+
+                            <span ng-if="current != pages" class="next" ng-click="selectedNextPage(current+1)">
+                                <a href="">&gt;&gt;</a>
+                            </span> 
+                        </div>
+                        {# End display pagination #}
+                        <div ng-if="pages == 0">
+                            Aucun élément sélectionné
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'SatisfactoryOperationBundle:js:correspondance.js.twig' %}                        
+{% endblock %}        

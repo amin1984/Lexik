@@ -1,0 +1,124 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>ÉDITION D'UN FILTRAGE CLIENT</h1>
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard"  ng-controller="filteringEditCtrl" id="form-operation" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        {{ form_start(form, {'method': 'post', 'action': path('operation_filtering_edit',{'id':filtering.id}), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <div>
+                                <label class="col-sm-7">
+                                    Choisir le client pour lequel on applique la règle de filtrage*
+                                </label>
+                                <div class="col-sm-7">
+                                    {{ form_widget(form.client, { 'attr': {'class': 'form-control'} }) }}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="col-sm-7 label-margin-header">
+                                    Nom du filtrage client*
+                                </label> 
+                                <div class="col-sm-7 {% if (form.name.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(form.name, { 'attr': {'class': 'form-control'} }) }}
+                                    {% for error in form.name.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div> 
+                            </div>
+                            <div>
+                                <label class="col-sm-7 label-margin-header">
+                                    Id sharing-data de la règle
+                                </label> 
+                                <div class="col-sm-7 {% if (form.sharingData.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(form.sharingData, { 'attr': {'class': 'form-control'} }) }}
+                                </div> 
+                            </div> 
+                            <div>
+                                <label class="col-sm-7 label-margin-header">
+                                    Nom de la colonne sur laquelle se base*
+                                </label> 
+                                <div class="col-sm-7 {% if (form.columnName.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(form.columnName, { 'attr': {'class': 'form-control'} }) }}
+                                    {% for error in form.columnName.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div> 
+                            </div>
+                            <div>
+                                <label class="col-sm-7 label-margin-header">
+                                    Valeur qui va permettre de filtrer la ligne*
+                                </label> 
+                                <div class="col-sm-7 {% if (form.value.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(form.value, { 'attr': {'class': 'form-control'} }) }}
+                                    {% for error in form.value.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div> 
+                            </div>
+                            <label class="label-margin-header">
+                                <div class="col-sm-12 {% if (form.type.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(form.type, { 'attr': {'class': 'radio'} }) }}
+                                    {% for error in form.type.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div>
+                            </label> 
+                            <label class="col-sm-12 label-margin-header">
+                                Si ce filtrage ne s'applique sur une période donnée
+                            </label>
+                            <div class="col-sm-12">
+                                <label class="col-sm-3">
+                                    Date de début de filtrage
+                                </label> 
+                                <div class="col-sm-4">
+                                    {{ form_widget(form.dateStart, { 'attr': {'class': 'form-control datepicker'} }) }}
+                                </div>
+                            </div>
+                            <div class="col-sm-12 label-margin-header">
+                                <label class="col-sm-3">
+                                    Date de fin de filtrage
+                                </label> 
+                                <div class="col-sm-4">
+                                    {{ form_widget(form.dateEnd, { 'attr': {'class': 'form-control datepicker'} }) }}
+                                </div>
+                            </div> 
+                            <div class="col-sm-12">
+                                <br> {{ form_widget(form.isActive , { 'attr': {'class': '' } }) }}
+                                Actif
+                            </div>      
+                            <label class="col-sm-12 label-margin-header">
+                                {% if(filtering.createdBy is not null) %} 
+                                    La personne qui a créé le client est {{ filtering.creatorName }}  
+                                {% endif %}
+                                {% if(filtering.createdAt is not null) %} 
+                                    le {{ filtering.createdAt | date('d/m/Y h:i') }} 
+                                {% endif %}
+                            </label>
+
+                            <div class="col-sm-12 label-margin-header">
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i>  Sauver
+                                </button>
+                                <a href="{{ path('operation_filtering_index') }}">
+                                    <button type="button" class="btn btn-default">
+                                         <i class="fa fa-arrow-left"></i> Fermer sans enregistrer 
+                                    </button> 
+                                </a>  
+                            </div>
+
+                        </div>
+                        {{ form_end(form) }}    
+                    </div>
+                </div>
+            </div>
+    </section>
+    <!--main content end--> 
+    {% include 'SatisfactoryOperationBundle:js:filteringEdit.js.twig' %}
+{% endblock %}

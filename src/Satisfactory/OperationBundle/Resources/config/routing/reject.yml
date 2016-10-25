@@ -1,0 +1,24 @@
+operation_reject_index:
+    path:     /
+    defaults: { _controller: "SatisfactoryOperationBundle:Reject:index" }
+    methods:  [GET, POST]
+
+operation_reject_new:
+    path:     /new
+    defaults: { _controller: "SatisfactoryOperationBundle:Reject:new" }
+    methods:  [GET, POST]
+
+operation_reject_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "SatisfactoryOperationBundle:Reject:edit" }
+    methods:  [GET, POST]
+
+operation_reject_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "SatisfactoryOperationBundle:Reject:delete" }
+    methods:  GET
+
+operation_reject_list_ajax:
+    path:     /list/ajax
+    defaults: { _controller: "SatisfactoryOperationBundle:Reject:ajaxList" }
+    methods:  GET

@@ -1,0 +1,34 @@
+satisfactory_cron_homepage:
+    path:     /cron
+    defaults: { _controller: SatisfactoryCronBundle:Default:index }
+    
+satisfactory_cron_manualexecute:
+    path:     /cron/{id}/manualexecute
+    defaults: { _controller: "SatisfactoryCronBundle:Default:manualexecute" }
+    methods:  [GET, POST]
+    
+satisfactory_cron_log:
+    path:     /log
+    defaults: { _controller: "SatisfactoryCronBundle:Default:log" }
+    methods:  [GET, POST]
+
+satisfactory_kill_tread:
+    path:     /kill/thread
+    defaults: { _controller: "SatisfactoryCronBundle:Default:killThread" }
+    methods:  [GET, POST]
+
+satisfactory_cron_ajax_list_log:
+    path:     /list/log
+    defaults: { _controller: SatisfactoryCronBundle:Default:ajaxListLogs }
+    
+satisfactory_cron_log_operation:
+    path:     /{id}/log/operation
+    defaults: { _controller: "SatisfactoryCronBundle:Default:logOperation" }
+    
+satisfactory_cron_log_operation_ajax:
+    path:     /log/operation
+    defaults: { _controller: "SatisfactoryCronBundle:Default:ajaxLogOperation" } 
+    
+satisfactory_cron_download:
+    path:     /{id}/log/download
+    defaults: { _controller: SatisfactoryCronBundle:Default:download }   

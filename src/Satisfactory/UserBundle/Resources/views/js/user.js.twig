@@ -1,0 +1,151 @@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#example').DataTable({
+            "aaSorting": false,
+            'aoColumnDefs': [{
+                    "bSortable": false,
+                    "aTargets": false
+                }],
+            "bLengthChange": false,
+            "bPaginate": false,
+            "filter": false
+        });
+        $("div:empty").remove();
+        $("#example_info").parent().remove();
+        $("#example_paginate").css('float', 'left');
+    });
+
+    function UserCtrl($scope, $http) {
+        $scope.current = 1;
+        $scope.order = 'updatedAt';
+        $scope.countOrder = 1;
+        $scope.orderType = 'DESC';
+        $scope.input = null;
+
+        // First Page
+        $http({
+            url: '{{ path('user_list_ajax') }}',
+            method: "GET",
+            params: {'order': $scope.order, 'input': $scope.input},
+            headers: {'Content-Type': 'application/json'}
+        }).success(function (data) {
+            $scope.users = data.users;
+            $scope.pages = data.pages;
+            $scope.currentPage = data.currentPage;
+            $scope.urlPage = data.urlPage;
+            $scope.limit = data.limit;
+        });
+
+        // On selected Page
+        $scope.selectedPage = function (page) {
+            $scope.page = page;
+            $http({
+                url: '{{ path('user_list_ajax') }}',
+                method: "GET",
+                params: {'page': $scope.page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.users = data.users;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+                $scope.current = page;
+            });
+        };
+        
+        // Next Page
+        $scope.selectedNextPage = function (page) {
+            $scope.page = page;
+            $http({
+                url: '{{ path('user_list_ajax') }}',
+                method: "GET",
+                params: {'page': $scope.page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.users = data.users;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+                $scope.count++;
+                $scope.current = page;
+            });
+        };
+
+        // Last Page
+        $scope.selectedLastPage = function (page) {
+            $scope.page = page;
+            $http({
+                url: '{{ path('user_list_ajax') }}',
+                method: "GET",
+                params: {'page': $scope.page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.users = data.users;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+                $scope.count--;
+                $scope.current = page;
+            });
+        };
+        
+        // Order By
+        $scope.orderBy = function (order) {
+            $scope.order = order;
+            if ($scope.countOrder % 2)
+                $scope.orderType = 'DESC';
+            else
+                $scope.orderType = 'ASC';
+            $scope.countOrder++;
+
+            $http({
+                url: '{{ path('user_list_ajax') }}',
+                method: "GET",
+                params: {'page': $scope.page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.users = data.users;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+            });
+        };
+
+        // Search
+        $scope.inputSearch = function () {
+            $scope.input = this.inputValue;
+            $scope.page = 1;
+            $http({
+                url: '{{ path('user_list_ajax') }}',
+                method: "GET",
+                params: {'page': 1,'input': $scope.input},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.users = data.users;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+                $scope.offset = data.offset;
+            });
+        };
+
+
+
+        // Range
+        $scope.range = function (min, max, step) {
+            step = step || 1;
+            var input = [];
+            for (var i = min; i <= max; i += step)
+                input.push(i);
+            return input;
+        };
+
+    }
+
+</script>    

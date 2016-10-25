@@ -1,0 +1,59 @@
+<script type="text/javascript">
+
+    
+    $("#newForm #operation_replacement_replaceStringToReplaceFormat_0").attr('checked', true);
+    $("#newForm #operation_replacement_replaceReplacementFormat_0").attr('checked', true);
+    $("#newForm #operation_replacement_status").attr('checked', true);
+    $("#newForm .replacementBlock").hide();
+    $("#newForm #operation_replacement_replaceReplace").on('change',function(){
+        if($(this).is(":checked"))
+            $("#newForm .replacementBlock").show();
+        else 
+            $("#newForm .replacementBlock").hide();
+    });
+    $("#newForm input:radio[name='operation_replacement[replaceStringToReplaceFormat]']").on('change',function(){
+        
+        if($(this).is(":checked") && $(this).val() == 'wildcard')
+            $("#newForm .replaceReplacementFormat").hide();
+        else 
+            $("#newForm .replaceReplacementFormat").show();
+    });
+    $(".editForm input:radio[name='operation_replacement[replaceStringToReplaceFormat]']").on('change',function(){
+        
+        if($(this).is(":checked") && $(this).val() == 'wildcard')
+            $(this).parent().parent().find(".replaceReplacementFormat").hide();
+        else 
+            $(this).parent().parent().find(".replaceReplacementFormat").show();
+    });
+    
+    $(".editForm").each(function(){
+        if($(this).find('.replaceReplace').is(":checked"))
+            $(this).find(".replacementBlock").show();
+        else 
+            $(this).find(".replacementBlock").hide();
+    });
+    $(".editForm").each(function(){
+        if($(this).find('.replaceReplace').is(":checked"))
+            $(this).find(".replacementBlock").show();
+        else 
+            $(this).find(".replacementBlock").hide();
+    });
+    $(".editForm .replaceReplace").on('change',function(){
+        if($(this).is(":checked"))
+            $(this).parent().parent().find(".replacementBlock").show();
+        else 
+            $(this).parent().parent().find(".replacementBlock").hide();
+    });
+    
+    $("#operation_replacement_replaceReplacementFormat label").after('<br />');
+        
+
+    function operationReplacementCtrl($scope) {
+        $scope.counter = 0;
+        $scope.changeHost = function () {
+            console.log($scope.name);
+        };
+        
+    }
+
+</script>    

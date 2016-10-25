@@ -1,0 +1,15 @@
+<script type="text/javascript">
+
+    function operationCtrl() {
+        echo('fff');
+        var countPublish = "{{ countPublish }}";
+        var countArchive = "{{ countArchive }}";
+        console.log(countArchive);
+        if( countPublish > 0)
+        $("#operation_type_7").attr("disabled","disabled");
+        if( countArchive > 0)
+        $("#operation_type_8").attr("disabled","disabled");
+    
+    }
+
+</script>    

@@ -1,0 +1,34 @@
+operation_correspondance_index:
+    path:     /
+    defaults: { _controller: "SatisfactoryOperationBundle:Correspondance:index" }
+    methods:  [GET, POST]
+
+operation_correspondance_show:
+    path:     /{id}/show
+    defaults: { _controller: "SatisfactoryOperationBundle:Correspondance:show" }
+    methods:  GET
+
+operation_correspondance_new:
+    path:     /new
+    defaults: { _controller: "SatisfactoryOperationBundle:Correspondance:new" }
+    methods:  [GET, POST]
+
+operation_correspondance_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "SatisfactoryOperationBundle:Correspondance:edit" }
+    methods:  [GET, POST]
+
+operation_correspondance_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "SatisfactoryOperationBundle:Correspondance:delete" }
+    methods:  GET
+    
+operation_correspondance_columns_ajax:
+    path:     /columns
+    defaults: { _controller: "SatisfactoryOperationBundle:Correspondance:ajaxColumns" }
+    methods:  GET    
+
+operation_correspondance_index_ajax:
+    path:     /ajax/list/correspondance
+    defaults: { _controller: "SatisfactoryOperationBundle:Correspondance:ajaxList" }
+    methods:  GET 

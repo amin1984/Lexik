@@ -1,0 +1,212 @@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#example').DataTable({
+            "aaSorting": false,
+            'aoColumnDefs': [{
+                    "bSortable": false,
+                    "aTargets": false
+                }],
+            "bLengthChange": false,
+            "bPaginate": false,
+            "filter": false
+        });
+        $("div:empty").remove();
+        $("#example_info").parent().remove();
+        $("#example_paginate").css('float', 'left');
+
+    {% if(connexion == 0) %}
+            $(window).load(function () {
+                $('#myModal').modal('show');
+            });
+    {% endif %}
+        });
+
+        function settingCtrl($scope, $http) {
+            $scope.agencysLength = 1;
+            $scope.count = 2;
+            $scope.current = 1;
+            $scope.order = 'name';
+            $scope.countOrder = 1;
+            $scope.orderType = 'DESC';
+            $scope.input = null;
+            $scope.agency = 'all';
+
+            // First Page
+            $http({
+                url: '{{ path('setting_ajax_list') }}',
+                method: "GET",
+                params: {'order': $scope.order, 'input': $scope.input, 'agency': $scope.agency},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.settings = data.settings;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+                $scope.agencys = data.agencys;
+                $scope.agencyForm = {type: $scope.agencys[0].id};
+                $scope.status = data.status;
+                $scope.statusForm = {type: $scope.status[0].value};
+            });
+
+            // On selected Page
+            $scope.selectedPage = function (page) {
+                $scope.page = page;
+                $http({
+                    url: '{{ path('setting_ajax_list') }}',
+                    method: "GET",
+                    params: {'page': page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input, 'agency': $scope.agency, 'status': $scope.selectedStatus},
+                    headers: {'Content-Type': 'application/json'}
+                }).success(function (data) {
+                    $scope.settings = data.settings;
+                    $scope.pages = data.pages;
+                    $scope.currentPage = data.currentPage;
+                    $scope.urlPage = data.urlPage;
+                    $scope.limit = data.limit;
+                    $scope.agencys = data.agencys;
+                    $scope.status = data.status;
+                    $scope.current = page;
+                });
+            };
+
+            // Next Page
+            $scope.selectedNextPage = function (page) {
+                $scope.page = page;
+                $http({
+                    url: '{{ path('setting_ajax_list') }}',
+                    method: "GET",
+                    params: {'page': page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input, 'agency': $scope.agency, 'status': $scope.selectedStatus},
+                    headers: {'Content-Type': 'application/json'}
+                }).success(function (data) {
+                    $scope.settings = data.settings;
+                    $scope.pages = data.pages;
+                    $scope.currentPage = data.currentPage;
+                    $scope.urlPage = data.urlPage;
+                    $scope.limit = data.limit;
+                    $scope.agencys = data.agencys;
+                    $scope.status = data.status;
+                    $scope.count++;
+                    $scope.current = page;
+                });
+            };
+
+            // Last Page
+            $scope.selectedLastPage = function (page) {
+                $scope.page = page;
+                $http({
+                    url: '{{ path('setting_ajax_list') }}',
+                    method: "GET",
+                    params: {'page': page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input, 'agency': $scope.agency, 'status': $scope.selectedStatus},
+                    headers: {'Content-Type': 'application/json'}
+                }).success(function (data) {
+                    $scope.settings = data.settings;
+                    $scope.pages = data.pages;
+                    $scope.currentPage = data.currentPage;
+                    $scope.urlPage = data.urlPage;
+                    $scope.limit = data.limit;
+                    $scope.agencys = data.agencys;
+                    $scope.status = data.status;
+                    $scope.count--;
+                    $scope.current = page;
+                });
+            };
+
+            // Order By
+            $scope.orderBy = function (order) {
+                $scope.order = order;
+                if ($scope.countOrder % 2)
+                    $scope.orderType = 'DESC';
+                else
+                    $scope.orderType = 'ASC';
+                $scope.countOrder++;
+
+                $http({
+                    url: '{{ path('setting_ajax_list') }}',
+                    method: "GET",
+                    params: {'page': $scope.page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input, 'agency': $scope.agency, 'status': $scope.selectedStatus},
+                    headers: {'Content-Type': 'application/json'}
+                }).success(function (data) {
+                    $scope.settings = data.settings;
+                    $scope.pages = data.pages;
+                    $scope.currentPage = data.currentPage;
+                    $scope.urlPage = data.urlPage;
+                    $scope.limit = data.limit;
+                    $scope.agencys = data.agencys;
+                    $scope.status = data.status;
+                });
+            };
+
+            // Search
+            $scope.inputSearch = function () {
+                $scope.input = this.inputValue;
+                $http({
+                    url: '{{ path('setting_ajax_list') }}',
+                    method: "GET",
+                    params: {'page': 1, 'input': $scope.input, 'agency': $scope.agency, 'status': $scope.selectedStatus},
+                    headers: {'Content-Type': 'application/json'}
+                }).success(function (data) {
+                    $scope.settings = data.settings;
+                    $scope.pages = data.pages;
+                    $scope.currentPage = data.currentPage;
+                    $scope.urlPage = data.urlPage;
+                    $scope.limit = data.limit;
+                    $scope.agencys = data.agencys;
+                    $scope.status = data.status;
+                });
+            };
+
+            // Agency Search
+            $scope.agencySearch = function () {
+                $scope.agency = $scope.agencyForm.type;
+                $http({
+                    url: '{{ path('setting_ajax_list') }}',
+                    method: "GET",
+                    params: {'page': 1, 'input': $scope.input, 'agency': $scope.agency, 'status': $scope.selectedStatus},
+                    headers: {'Content-Type': 'application/json'}
+                }).success(function (data) {
+                    $scope.settings = data.settings;
+                    $scope.pages = data.pages;
+                    $scope.currentPage = data.currentPage;
+                    $scope.urlPage = data.urlPage;
+                    $scope.limit = data.limit;
+                    $scope.agencys = data.agencys;
+                    $scope.status = data.status;
+                });
+            };
+            
+            // Status Search
+            $scope.statusSearch = function () {
+                $scope.selectedStatus = $scope.statusForm.type;
+                $http({
+                    url: '{{ path('setting_ajax_list') }}',
+                    method: "GET",
+                    params: {'page': 1, 'input': $scope.input, 'agency': $scope.agency, 'status': $scope.selectedStatus},
+                    headers: {'Content-Type': 'application/json'}
+                }).success(function (data) {
+                    $scope.settings = data.settings;
+                    $scope.pages = data.pages;
+                    $scope.currentPage = data.currentPage;
+                    $scope.urlPage = data.urlPage;
+                    $scope.limit = data.limit;
+                    $scope.agencys = data.agencys;
+                    $scope.status = data.status;
+                });
+            };
+
+
+            // Range
+            $scope.range = function (min, max, step) {
+                step = step || 1;
+                var input = [];
+                for (var i = min; i <= max; i += step)
+                    input.push(i);
+                return input;
+            };
+
+
+        }
+
+
+
+</script>    

@@ -1,0 +1,174 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>LISTE DES LOGS</h1>
+    </div>
+    <section ng-app="neuboard"  ng-controller="logCtrl" id="main-content" class="animated fadeInRight">
+        <div class="row">
+            <!--Tread message-->
+            {% for flashMessage in app.session.flashbag.get('thread') %}
+                <div class="alert alert-success alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <div class="flash-notice">
+                        <strong>Succès ! </strong>{{ flashMessage }}.  
+                    </div>
+                </div>
+            {% endfor %}
+            <!--End Thread message-->
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">   
+                        <h3 class="col-md-12">Rechercher :</h3>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-md-12">Traitement :</div>
+                            <div class="col-md-6">
+                                <input  type="text" class="form-control" ng-model='form.type' ng-change="dealingSearch()"/> 
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label>Date compris entre : </label>
+                            </div>
+                            <div class="col-md-2">
+                                <input  type="text" class="form-control datepicker" ng-model='date1' ng-change="beginAt()" >
+                            </div>
+                            <div class="col-md-2">
+                                <input  type="text" class="form-control datepicker" ng-model='date2' ng-change="endAt()" >
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">&nbsp;<br></div>        
+                        <table  id="example" class="table table-striped table-bordered"  >
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('client')">
+                                            Client
+                                        </a>
+                                    </th>
+                                    <th>
+                                         <a href="" ng-init="countOrder=0"  ng-click="orderBy('dealing')">
+                                            Id traitement
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('dealingName')">
+                                             Nom traitement
+                                        </a>
+                                    </th>
+                                    <th>
+                                         <a href="" ng-init="countOrder=0"  ng-click="orderBy('beginAt')">
+                                            Début exécution
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('endAt')">
+                                            Fin exécution
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('executionDuration')">
+                                            Temps exécution
+                                        </a>
+                                    </th>
+                                    <th>Statut</th>
+                                    <th>Résultat</th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('nbLineIn')">
+                                            Nb lignes en entrée
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('nbLineOut')">
+                                            Nb lignes en sortie
+                                        </a>
+                                    </th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>   
+
+                            <tbody ng-repeat="val in logs">  
+                                <tr ng-class="{error: val.result != 1 && val.running != 1}">
+                                    <td>{{ '{{ val.client }}' }}</td>
+                                    <td>{{ '{{ val.dealing }}' }}</td>
+                                    <td>{{ '{{ val.dealingName }}' }}</td>
+                                    <td>{{ '{{ val.beginAt }}' }}</td>
+                                    <td>{{ '{{ val.endAt }}' }}</td>
+                                    <td>{{ '{{ val.executionDuration }}' }}</td>
+                                    <td>
+                                        <span ng-if="val.running == 0">
+                                            Terminé
+                                        </span>
+                                        <span ng-if="val.running == 1">
+                                            En cours
+                                        </span>
+                                        <span ng-if="val.running == 2">
+                                            Annulé
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span ng-if="val.result == 1 && val.running == 0">
+                                            Ok
+                                        </span>
+                                        <span ng-if="val.result != 1 && val.running != 1">
+                                            Erreur 
+                                        </span>
+                                    </td>
+                                    <td>{{ '{{ val.nbLineIn }}' }}</td>
+                                    <td>
+                                        <span ng-if="val.nbLineOut">
+                                            {{ '{{ val.nbLineOut }}' }}
+                                        </span>
+                                        <span ng-if="!val.nbLineOut">
+                                            0
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{{ '{{ val.pathDetail }}' }}">
+                                        Détail
+                                        <a/>
+                                    </td>
+                                    <td>
+                                        <span ng-if="val.running != 1" style="color: #CCC" title="Traitement fini">
+                                            Annuler
+                                        </span>
+                                        <span ng-if="val.running == 1"  title="Traitement en cours">
+                                            <a href="#">Annuler</a>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>    
+                        </table>
+                        {# Display pagination #} 
+                        <div  class="pagination" ng-if="pages > 1">
+                            <span  ng-if="current != 1" class="previous" ng-click="selectedLastPage(current-1)">
+                                <a href="">&lt;&lt;</a>
+                            </span>
+
+                            <span ng-repeat="(key, page) in range(1,pages)"  ng-class="(page == current) ? 'current' : ''" ng-click="selectedPage(page)">
+                                <a href="">
+                                    {{ '{{ page }}' }}
+                                </a>
+                            </span>
+
+                            <span ng-if="current != pages" class="next" ng-click="selectedNextPage(current+1)">
+                                <a href="">&gt;&gt;</a>
+                            </span> 
+                        </div>
+                        {# End display pagination #}
+                        <div ng-if="pages == 0">
+                            Aucun élément sélectionné
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'SatisfactoryCronBundle:js:log.js.twig' %}                        
+{% endblock %}        

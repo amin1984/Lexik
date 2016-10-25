@@ -1,0 +1,44 @@
+operation_dealing_index:
+    path:     /
+    defaults: { _controller: "SatisfactoryOperationBundle:Dealing:index" }
+    methods:  [GET, POST]
+
+operation_dealing_new:
+    path:     /new
+    defaults: { _controller: "SatisfactoryOperationBundle:Dealing:new" }
+    methods:  [GET, POST]
+
+operation_dealing_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "SatisfactoryOperationBundle:Dealing:edit" }
+    methods:  [GET, POST]
+
+operation_dealing_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "SatisfactoryOperationBundle:Dealing:delete" }
+    methods:  GET
+    
+operation_dealing_activate:
+    path:     /{id}/activate
+    defaults: { _controller: "SatisfactoryOperationBundle:Dealing:activate" }
+    methods:  GET 
+    
+operation_dealing_duplicate:
+    path:     /{id}/duplicate
+    defaults: { _controller: "SatisfactoryOperationBundle:Dealing:duplicate" }
+    methods:  GET    
+    
+operation_dealing_verifycsv:
+    path:     /verifycsv
+    defaults: { _controller: "SatisfactoryOperationBundle:Dealing:verifycsv" }
+    methods:  POST    
+    
+operation_dealing_getfilecolumns:
+    path:     /{id}/getfilecolumns
+    defaults: { _controller: "SatisfactoryOperationBundle:Dealing:getFileColumns" }
+    methods:  GET    
+
+operation_dealing_order_ajax:
+    path:     /ajax/order
+    defaults: { _controller: "SatisfactoryOperationBundle:Dealing:ajaxPaginatorOrderList" }
+    methods:  GET

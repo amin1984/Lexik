@@ -1,0 +1,175 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1> EDITION D'UN REJET</h1>
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard"  ng-controller="rejectEditCtrl" id="form-operation" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="col-sm-12">
+                            Votre nom ({{ app.user.lastName }} {{ app.user.firstName }}) sera lié à la création de ce rejet.
+                        </div>
+                        <br><br>
+                        {{ form_start(form, {'method': 'post', 'action': path('operation_reject_new'), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <div class="col-sm-12 ">
+                                <label class="col-sm-2">
+                                    Type de rejet* :
+                                </label>
+                                <div class="col-sm-10 {% if (form.type.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(form.type, { 'attr': {'class': 'radio','name':'protocol'} }) }}
+                                    {% for error in form.type.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div>
+                                <br><br>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="col-sm-6 {% if (form.ruleName.vars.errors | length > 0) %} has-error {% endif %}">
+                                    <label class="">Nom de la règle de rejet*</label> 
+                                    {{ form_widget(form.ruleName, { 'attr': {'class': 'form-control','name':'directory'} }) }}
+                                    {% for error in form.ruleName.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div> 
+
+                                <div class="col-sm-6 {% if (form.client.vars.errors | length > 0) %} has-error {% endif %}">
+                                    <label class="">Client *</label>
+                                    {{ form_widget(form.client, { 'attr': {'class': 'form-control','client':'sharingData'} }) }}
+                                    {% for error in form.client.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>      
+                            <div class="col-sm-12">
+                                <label class="col-sm-6 label-margin-header">
+                                    Nom de la colonne sur laquelle s'applique le rejet*
+                                </label> 
+                                <div class="col-sm-6 {% if (form.columnName.vars.errors | length > 0) %} has-error {% endif %}">
+                                    {{ form_widget(form.columnName, { 'attr': {'class': 'form-control','name':'directory'} }) }}
+                                    {% for error in form.columnName.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div> 
+                            </div>   
+
+                            <!-- If "Sollicitation" --> 
+                            <div  class="form-group col-sm-12 hidden" id="sollitation" >
+                                <div class="col-sm-12 label-margin-header">
+                                    <label class="col-sm-3">
+                                        Ne pas procéder à plus de  
+                                    </label>
+                                    <div class="col-sm-1">  
+                                        {{ form_widget(form.maxProcess, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>  
+                                    <label class="col-sm-2">
+                                        envois par
+                                    </label>
+                                    <div class="col-sm-1">
+                                        {{ form_widget(form.processBy.children[0]) }}
+                                    </div>
+                                    <div class="col-sm-1">
+                                        {{ form_widget(form.processDay, { 'attr': {'class': 'form-control'} }) }} 
+                                    </div>
+                                    <label class="col-sm-1 label-margin-bottom">
+                                        jour
+                                    </label> 
+                                </div> 
+                                <div class="col-sm-12"> 
+                                    <label class="col-sm-6">
+
+                                    </label>
+                                    <div class="col-sm-1">
+                                        {{ form_widget(form.processBy.children[1]) }}
+                                    </div>
+                                    <div class="col-sm-1">
+                                        {{ form_widget(form.processWeek, { 'attr': {'class': 'form-control'} }) }} 
+                                    </div>
+                                    <label class="col-sm-1 label-margin-bottom">
+                                        semaine
+                                    </label>
+                                </div> 
+                                <div class="col-sm-12"> 
+                                    <label class="col-sm-6">
+
+                                    </label>
+                                    <div class="col-sm-1">
+                                        {{ form_widget(form.processBy.children[2]) }}
+                                    </div>
+                                    <div class="col-sm-1">
+                                        {{ form_widget(form.processMonth, { 'attr': {'class': 'form-control'} }) }} 
+                                    </div>
+                                    <label class="col-sm-1 label-margin-bottom">
+                                        mois
+                                    </label>
+                                </div>
+                            </div>     
+                            <!-- End If "Sollicitation" --> 
+
+                            <!-- If "Blacklist" -->
+                            <div class="form-group col-sm-12 hidden" id="blacklist">
+                                <div class="col-sm-12"><br><br>
+                                    <label class="col-sm-6 file-margin-header">
+                                        Uploader un fichier de valeur pour cette colonne à blacklister* :
+                                    </label>
+                                    <div class="col-sm-6 file-margin-header">
+                                        {{ form_widget(form.file, { 'attr': {'class': ''} }) }}
+                                        {% for error in form.file.vars.errors %}
+                                            <span class="alert alert-danger-form">{{ error.message }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>    
+                            <!-- End If "Blacklist" --> 
+
+                            <!-- If "Quota" -->
+                            <div class="col-sm-12 hidden" id="quota">
+                                <label class="col-sm-12 label-margin-header">
+                                    Nombre d'envois maximum possible 
+                                </label> 
+                                <div class="col-sm-12 ">
+                                    <div class="col-sm-2">  
+                                        {{ form_widget(form.numberMaxToSend, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>  
+                                    <label class="col-sm-3">
+                                        envois sur une période de
+                                    </label>
+                                    <div class="col-sm-1">
+                                        {{ form_widget(form.periodOfSend, { 'attr': {'class': 'form-control'} }) }}
+                                    </div>
+                                    <div class="col-sm-1">
+                                        {{ form_widget(form.processDay, { 'attr': {'class': 'form-control'} }) }} 
+                                    </div>
+                                    <div class="col-sm-4">
+                                        {{ form_widget(form.typeSendQuota, { 'attr': {'class': 'radio'} }) }}
+                                    </div>
+                                </div> 
+                            </div> 
+                            <!-- End If "Quota" --> 
+
+                            <div class="col-sm-12">
+                                <br>
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i>  Sauver
+                                </button>
+                                <a href="{{ path('operation_reject_index') }}">
+                                    <button type="button" class="btn btn-default">
+                                        <i class="fa fa-arrow-left"></i> Fermer sans enregistrer
+                                    </button> 
+                                </a>
+                            </div>
+
+                        </div>
+                        {{ form_end(form) }}    
+                    </div>
+                </div>
+            </div>
+    </section>
+    <!--main content end--> 
+    {% include 'SatisfactoryOperationBundle:js:rejectEdit.js.twig' %}
+{% endblock %}

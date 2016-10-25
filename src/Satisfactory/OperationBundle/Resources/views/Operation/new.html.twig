@@ -1,0 +1,75 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>CREATION D'UNE OPERATION</h1>
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard"  ng-controller="operationCtrl" id="form-operation" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <!--Succes message-->
+                    {% for flashMessage in app.session.flashbag.get('notice') %}
+                        <div class="alert alert-success alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <div class="flash-notice">
+                                <strong>Succès ! </strong>{{ flashMessage }}.  
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <!--End ssucces message-->
+                    <div class="panel-body">
+                        <a href="{{ path('operation_dealing_edit',{'id':dealing.id}) }}">
+                            <button type="button" class="btn btn-info btn-xs">
+                                <i class="fa fa-arrow-left"></i> 
+                                Retour à la page d'édition du traitement {{ dealing.name }}
+                            </button> <br>
+                        </a>  
+                        <br> 
+                        {{ form_start(form, {'method': 'post', 'action': path('operation_operation_new',{'id': dealingId }), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <div class="col-sm-12 inline">
+                                Ajouter une nouvelle opération à effectuer sur ce traitement :
+                                <br><br>
+                                <ul>
+                                    <li>
+                                        {{ form_widget(form.type, { 'attr': {'class': 'vertical-list-operation',} }) }}
+                                    </li>
+                                </ul>
+                                {% for error in form.type.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <br>
+                                <label class="col-sm-12">
+                                    Descriptif court pour identifier l'opération :
+                                </label> 
+                                <div class="col-sm-12">
+                                    {{ form_widget(form.description, { 'attr': {'class': 'form-control'} }) }}
+                                    {% for error in form.description.vars.errors %}
+                                        <span class="alert alert-danger-form">{{ error.message }}</span>
+                                    {% endfor %}
+                                </div> 
+                            </div>   
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-0 col-sm-6">
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i> Ajouter cette nouvelle opération
+                                </button>
+                            </div>
+                        </div> 
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--main content end--> 
+    {% include 'SatisfactoryOperationBundle:js:operationForm.js.twig' with { 'countArchive': countArchive, 'countPublish': countPublish } %}
+{% endblock %}

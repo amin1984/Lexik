@@ -1,0 +1,176 @@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("div:empty").remove();
+        $("#example_info").parent().remove();
+        $("#example_paginate").css('float', 'left');
+    });
+
+    function logCtrl($scope, $http) {
+        $scope.current = 1;
+        $scope.order = 'beginAt';
+        $scope.countOrder = 1;
+        $scope.orderType = 'DESC';
+        $scope.begin_at = null;
+        $scope.end_at = null;
+        $scope.page = null;
+
+        // First Page
+        $http({
+            url: '{{ path('satisfactory_cron_ajax_list_log') }}',
+            method: "GET",
+            params: {'order': $scope.order, 'orderType': $scope.orderType, 'beginAt': $scope.begin_at, 'endAt': $scope.end_at, 'dealing': $scope.dealing},
+            headers: {'Content-Type': 'application/json'}
+        }).success(function (data) {
+            $scope.dealings = data.dealings;
+            $scope.form = {type: $scope.dealings[0].id};
+            $scope.logs = data.logs;
+            $scope.pages = data.pages;
+            $scope.currentPage = data.currentPage;
+            $scope.limit = data.limit;
+        });
+
+        // On selected Page
+        $scope.selectedPage = function (page) {
+            $http({
+                url: '{{ path('satisfactory_cron_ajax_list_log') }}',
+                method: "GET",
+                params: {'page': page, 'order': $scope.order, 'orderType': $scope.orderType, 'beginAt': $scope.begin_at, 'endAt': $scope.end_at, 'dealing': $scope.dealing},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.dealings = data.dealings;
+                $scope.logs = data.logs;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.limit = data.limit;
+                $scope.current = page;
+            });
+        };
+
+        // Serach
+        $scope.beginAt = function () {
+            $scope.begin_at = $scope.date(this.date1);
+            $http({
+                url: '{{ path('satisfactory_cron_ajax_list_log') }}',
+                method: "GET",
+                params: {'page': $scope.page, 'order': $scope.order, 'orderType': $scope.orderType, 'dealing': $scope.dealing, 'beginAt': $scope.begin_at, 'endAt': $scope.end_at},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.dealings = data.dealings;
+                $scope.logs = data.logs;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.limit = data.limit;
+            });
+        };
+
+        $scope.endAt = function () {
+            $scope.end_at = $scope.date(this.date2);
+            $http({
+                url: '{{ path('satisfactory_cron_ajax_list_log') }}',
+                method: "GET",
+                params: {'page': $scope.page, 'order': $scope.order, 'orderType': $scope.orderType, 'dealing': $scope.dealing, 'beginAt': $scope.begin_at, 'endAt': $scope.end_at},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.dealings = data.dealings;
+                $scope.logs = data.logs;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.limit = data.limit;
+            });
+        };
+
+        $scope.dealingSearch = function () {
+            $scope.dealing = $scope.form.type;
+            $http({
+                url: '{{ path('satisfactory_cron_ajax_list_log') }}',
+                method: "GET",
+                params: {'page': $scope.page, 'order': $scope.order, 'orderType': $scope.orderType, 'dealing': $scope.dealing, 'beginAt': $scope.begin_at, 'endAt': $scope.end_at},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.dealings = data.dealings;
+                $scope.logs = data.logs;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.limit = data.limit;
+            });
+        };
+        
+         // Next Page
+        $scope.selectedNextPage = function (page) {
+            $scope.page = page;
+            $http({
+                url: '{{ path('satisfactory_cron_ajax_list_log') }}',
+                method: "GET",
+                params: {'page': page, 'order': $scope.order, 'orderType': $scope.orderType, 'dealing': $scope.dealing, 'beginAt': $scope.begin_at, 'endAt': $scope.end_at},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.dealings = data.dealings;
+                $scope.logs = data.logs;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.limit = data.limit;
+                $scope.current = page;
+            });
+        };
+
+        // Last Page
+        $scope.selectedLastPage = function (page) {
+            $http({
+                url: '{{ path('satisfactory_cron_ajax_list_log') }}',
+                method: "GET",
+                params: {'page': page, 'order': $scope.order, 'orderType': $scope.orderType, 'dealing': $scope.dealing, 'beginAt': $scope.begin_at, 'endAt': $scope.end_at},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.dealings = data.dealings;
+                $scope.logs = data.logs;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.limit = data.limit;
+                $scope.current = page;
+            });
+        }; 
+        
+        // Order By
+        $scope.orderBy = function (order) {
+            $scope.order = order;
+            if ($scope.countOrder % 2)
+                $scope.orderType = 'DESC';
+            else
+                $scope.orderType = 'ASC';
+            $scope.countOrder++;
+
+            $http({
+                url: '{{ path('satisfactory_cron_ajax_list_log') }}',
+                method: "GET",
+                params: {'page': $scope.page, 'order': $scope.order, 'orderType': $scope.orderType, 'input': $scope.input},
+                headers: {'Content-Type': 'application/json'}
+            }).success(function (data) {
+                $scope.dealings = data.dealings;
+                $scope.logs = data.logs;
+                $scope.pages = data.pages;
+                $scope.currentPage = data.currentPage;
+                $scope.urlPage = data.urlPage;
+                $scope.limit = data.limit;
+            });
+        };
+
+        // Range
+        $scope.range = function (min, max, step) {
+            step = step || 1;
+            var input = [];
+            for (var i = min; i <= max; i += step)
+                input.push(i);
+            return input;
+        };
+
+        // Date 
+        $scope.date = function (date) {
+            var newDate = new Date(date).getTime();
+            return (newDate/1000);
+        };
+
+    }
+
+</script>    

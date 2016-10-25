@@ -1,0 +1,27 @@
+<script type="text/javascript">
+    
+    function rejectEditCtrl() {
+        $('#reject_type_0').on("click", function () {
+           $('#sollitation').removeClass('hidden');
+           $('#blacklist').addClass('hidden');
+           $('#quota').addClass('hidden');
+        });
+        $('#reject_type_1').on("click", function () {
+           $('#sollitation').addClass('hidden');
+           $('#blacklist').removeClass('hidden');
+           $('#quota').addClass('hidden');
+        });
+        $('#reject_type_2').on("click", function () {
+           $('#sollitation').addClass('hidden');
+           $('#blacklist').addClass('hidden');
+           $('#quota').removeClass('hidden');
+        });
+        
+        if ($('#reject_type_0').is(':checked'))
+            $('#sollitation').removeClass('hidden');
+        if ($('#reject_type_1').is(':checked'))
+            $('#blacklist').removeClass('hidden');
+        if ($('#reject_type_2').is(':checked'))
+            $('#quota').removeClass('hidden');
+    }
+</script>    

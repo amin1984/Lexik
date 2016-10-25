@@ -1,0 +1,220 @@
+<script type="text/javascript">
+
+    function operationEditFilterCtrl($scope, $http) {
+
+        $('[data-toggle="tooltip"]').tooltip();
+        var $b = $('#builder');
+        $scope.loader = 'show';
+        $scope.save = 'hidden';
+        $scope.isWarning = 'hidden';
+        $scope.saveSuccess = 'hidden';
+        var jsonString = '{{ operation.json }}';
+    {#        {{ dump(operation.filterManualColumns)}}#}
+        var manualColumns = '{{ operation.filterManualColumns|json_encode() }}';
+        console.log((manualColumns.length));
+        if (manualColumns != "null") {
+            manualColumns = $.parseJSON(manualColumns);
+            manualColumnsString = manualColumns.join(';');
+            $('#contentFilterManualColumns').val(manualColumnsString);
+        }
+        $http({
+            url: '{{ path('operation_dealing_getfilecolumns',{'id': dealingId }) }}',
+            method: "GET",
+            async: true,
+            headers: {'Content-Type': 'application/json'}
+        }).success(function (data) {
+            $scope.data = data;
+        }).then(function () {
+            $scope.loader = 'hidden';
+            var object = $scope.data;
+            var status = object.status;
+            var message = object.message;
+            var myJSON = "";
+            if (status == 'warning')
+            {
+                if (manualColumns != "null") {
+                    buildPlugin(manualColumns);
+                    $scope.isWarning = 'hide';
+                }
+                $scope.warning = object.message;
+                $scope.isWarning = 'show';
+                $('#filterManualColumns').modal({
+                    show: true
+                });
+                $('#insertFilterManualColumns').click(function () {
+                    var str = $('#contentFilterManualColumns').val();
+                    if (str == "" || str == null)
+                        alert("Veuillez insérer au moins un nom de colonne");
+                    else {
+                        str = str.split(";");
+                        manualColumns = [];
+                        for (var i in str)
+                            manualColumns.push($.trim(str[i]));
+                        buildPlugin(manualColumns);
+                        $scope.save = 'show';
+                        $scope.isWarning = 'hide';
+                        $('#filterManualColumns').modal('toggle');
+                        $.ajax({
+                            url: '{{ path('operation_operation__manualcolumns',{'id': operation.id}) }}',
+                            type: 'POST',
+                            data: {json: (manualColumns)}
+                        });
+                    }
+                })
+
+            }
+            //JSON stack if success status
+            if (status == 'success')
+            {
+                $scope.save = 'show';
+                $scope.isWarning = 'hide';
+                buildPlugin(message);
+            }
+        });
+
+
+
+        // get rules
+        $('.parse-json').on('click', function () {
+            var json = JSON.stringify($('#builder').queryBuilder('getRules', {get_flags: true}), undefined, 2);
+            var description = $('#operation_filter_description').val();
+            if ($('#operation_filter_status').is(':checked')) {
+                $scope.status = 1;
+            } else {
+                $scope.status = 0;
+            }
+            $http({
+                url: '{{ path('operation_operation_filter_update_ajax',{'id': operation.id}) }}',
+                method: "GET",
+                params: {json: json, description: description, status: $scope.status}
+
+            }).success(function () {
+                $scope.saveSuccess = 'show';
+                $('html, body').animate({scrollTop: 0}, 'slow');
+            });
+        });
+
+
+        function buildPlugin(message, reset = false) {
+
+            var myarray = [];
+            for (var i in message) {
+
+                var item = {
+                    "id": message[i],
+                    "type": 'string',
+                    "operators": ['equal', 'not_equal', 'begins_with', 'greater_or_equal', 'less_or_equal', 'between', 'is_empty', 'is_not_empty']
+                };
+
+                myarray.push(item);
+            }
+            myJSON = JSON.stringify(myarray);
+            //QueryBuilder Plugin
+            var options = {
+                allow_empty: false,
+                default_filter: message[0],
+                sort_filters: true,
+                display_empty_filter: false,
+                default_condition: 'AND',
+                optgroups: {
+                    core: {
+                        en: 'Core',
+                        fr: 'Coeur'
+                    }
+                },
+                plugins: {
+                    'bt-tooltip-errors': {delay: 100},
+                    'sortable': null,
+                    'filter-description': {mode: 'bootbox'},
+                    'bt-selectpicker': null,
+                    'unique-filter': true,
+                    'bt-checkbox': {color: 'primary'},
+                    'invert': null
+                },
+                lang: {
+                    "__locale": "French (fr)",
+                    "add_rule": "Ajouter une règle",
+                    "add_group": "Ajouter un groupe",
+                    "delete_rule": "Supprimer",
+                    "delete_group": "Supprimer",
+                    "conditions": {
+                        "AND": "ET",
+                        "OR": "OU"
+                    },
+                    "operators": {
+                        "equal": "Strictement égal à",
+                        "not_equal": "Différent de la valeur exacte",
+                        "in": "dans",
+                        "not_in": "pas dans",
+                        "less": "inférieur",
+                        "less_or_equal": "Inférieur ou égal à une valeur",
+                        "greater": "supérieur",
+                        "greater_or_equal": "Supérieur ou égal à une valeur",
+                        "between": "Compris entre 2 valeurs",
+                        "not_between": "n'est pas entre",
+                        "begins_with": "Egal à l'expression (wildcards)",
+                        "not_begins_with": "Ne commence pas par",
+                        "contains": "Contient",
+                        "not_contains": "Ne contient pas",
+                        "ends_with": "Se termine par",
+                        "not_ends_with": "ne finit pas par",
+                        "is_empty": "Valeur vide",
+                        "is_not_empty": "Valeur non vide",
+                        "is_null": "est nul",
+                        "is_not_null": "n'est pas nul"
+                    },
+                    "errors": {
+                        "no_filter": "Aucun filtre sélectionné",
+                        "empty_group": "Le groupe est vide",
+                        "radio_empty": "Pas de valeur selectionnée",
+                        "checkbox_empty": "Pas de valeur selectionnée",
+                        "select_empty": "Pas de valeur selectionnée",
+                        "string_empty": "Valeur vide",
+                        "string_exceed_min_length": "Doit contenir au moins {0} caractères",
+                        "string_exceed_max_length": "Ne doit pas contenir plus de {0} caractères",
+                        "string_invalid_format": "Format invalide ({0})",
+                        "number_nan": "N'est pas un nombre",
+                        "number_not_integer": "N'est pas un entier",
+                        "number_not_double": "N'est pas un nombre réel",
+                        "number_exceed_min": "Doit être plus grand que {0}",
+                        "number_exceed_max": "Doit être plus petit que {0}",
+                        "number_wrong_step": "Doit être un multiple de {0}",
+                        "datetime_empty": "Valeur vide",
+                        "datetime_invalid": "Fomat de date invalide ({0})",
+                        "datetime_exceed_min": "Doit être après {0}",
+                        "datetime_exceed_max": "Doit être avant {0}",
+                        "boolean_not_valid": "N'est pas un booléen",
+                        "operator_not_multiple": "L'opérateur {0} ne peut utiliser plusieurs valeurs"
+                    }
+                },
+                filters: $.parseJSON(myJSON)
+            };
+
+            // init
+            $('#builder').queryBuilder(options);
+
+            $('#builder').on('afterCreateRuleInput.queryBuilder', function (e, rule) {
+                if (rule.filter.plugin == 'selectize') {
+                    rule.$el.find('.rule-value-container').css('min-width', '200px')
+                            .find('.selectize-control').removeClass('form-control');
+                }
+            });
+            if (!reset) {
+                // set rule
+                var jsonString = '{{ operation.json }}';
+                if (jsonString != "" && jsonString != null)
+                {
+                    var jsonobj = $.parseJSON(jsonString);
+                    $('#builder').queryBuilder('setRules', jsonobj);
+                }
+
+                // reset builder
+                $('.reset').on('click', function () {
+                    $('#builder').queryBuilder('reset');
+                    $('#result').addClass('hide').find('pre').empty();
+                    $scope.saveSuccess = 'hidden';
+                });
+            }
+        }
+    }
+</script>    

@@ -1,0 +1,55 @@
+{% extends 'SatisfactoryOperationBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>AJOUT D'UNE ENTREE DE LA CORRESPONDANCE</h1>
+    </div>
+    <!--main content start-->
+    <section ng-app="neuboard"  ng-controller="operationCtrl" id="form-operation" class="animated fadeInUp" >
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="col-sm-12">
+                            Votre nom "{{ app.user.lastName }} {{ app.user.firstName }}" sera lié à la création de cette entrée de correspondance..
+                        </div> <br><br> 
+                        {{ form_start(form, {'method': 'post', 'action': path('operation_entercorrespondence_new',{'id': correspondenceId }), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                {% for value in input %}
+                                    <label class="col-sm-6">
+                                        {{ value }}
+                                    </label>
+                                    <input type="text" name="{{ value }}" class="form-control" />
+                                {% endfor %}
+                            </div> 
+                            <div class="col-sm-6">
+                                {% for value in output %}
+                                    <label class="col-sm-6">
+                                        {{ value }}
+                                    </label>
+                                    <input type="text" name="{{ value }}" class="form-control" />
+                                {% endfor %}
+                            </div> 
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-0 col-sm-6">
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i> Sauver
+                                </button>
+                                <a href="{{ path('operation_correspondance_edit',{'id':correspondenceId}) }}">
+                                    <button type="button" class="btn btn-default">
+                                        <i class="fa fa-arrow-left"></i> Fermer sans enregistrer
+                                    </button> <br>
+                                </a>
+                            </div>
+                        </div> 
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--main content end--> 
+{% endblock %}

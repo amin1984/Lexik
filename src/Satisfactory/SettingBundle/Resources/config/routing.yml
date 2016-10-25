@@ -1,0 +1,39 @@
+satisfactory_setting_setting:
+    resource: "@SatisfactorySettingBundle/Resources/config/routing/setting.yml"
+    prefix:   /parameter
+
+satisfactory_setting_homepage:
+    path:     /setting
+    defaults: { _controller: SatisfactorySettingBundle:Customer:index }
+    
+satisfactory_setting_customer_new:
+    path:     /setting/customer/new
+    defaults: { _controller: SatisfactorySettingBundle:Customer:new } 
+    
+satisfactory_setting_group_new:
+    path:     /setting/group/new
+    defaults: { _controller: SatisfactorySettingBundle:Group:new }    
+
+satisfactory_setting_agency_new:
+    path:     /setting/agency/new
+    defaults: { _controller: SatisfactorySettingBundle:Agency:new }
+    
+satisfactory_setting_quest_new:
+    path:     /setting/quest/new
+    defaults: { _controller: SatisfactorySettingBundle:Quest:new }    
+    
+satisfactory_setting_segment_new:
+    path:     /setting/segment/new
+    defaults: { _controller: SatisfactorySettingBundle:Segment:new }  
+    
+satisfactory_setting_group_agency_new:
+    path:     /setting/group/agency/new
+    defaults: { _controller: SatisfactorySettingBundle:GroupAgency:new } 
+    
+satisfactory_setting_agency_quest_new:
+    path:     /setting/agncy/quest/new
+    defaults: { _controller: SatisfactorySettingBundle:AgencyQuest:new } 
+    
+satisfactory_setting_agency_segment_new:
+    path:     /setting/agency/segment/new
+    defaults: { _controller: SatisfactorySettingBundle:AgencySegment:new }     

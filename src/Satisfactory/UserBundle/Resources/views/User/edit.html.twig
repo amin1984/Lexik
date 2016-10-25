@@ -1,0 +1,89 @@
+{% extends 'SatisfactoryUserBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>EDITION D'UN CLIENT</h1>
+        {#<div class="breadcrumb-wrapper hidden-xs">
+            <span class="label">Vous êtes ici :</span>
+            <ol class="breadcrumb">
+                <li><a href="{{ path('user_index') }}">Clients</a>
+                </li>
+                <li class="active">Editer</li>
+            </ol>
+        </div>#}
+    </div>
+    <!--main content start-->
+    <section id="main-content" class="animated fadeInUp">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <br>
+                    <div class="col-md-12">
+                        <a  href="{{ path('user_index') }}">
+                            <button type="button" class="btn btn-info btn-xs">
+                                <i class="fa fa-arrow-left"></i> 
+                                Retour à la liste des flux
+                            </button> 
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        {{ form_start(edit_form, {'method': 'post', 'action': path('user_edit',{'id':user.id}), 'attr': {'class': 'form-horizontal form-border','novalidate': 'novalidate'} }) }}
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="">Nom du client *</label>
+                                {{ form_widget(edit_form.username, { 'attr': {'ng-model': 'user.username', 'class': 'form-control','name':'username','placeholder':'Nom du client'} }) }}
+                                {% for error in edit_form.username.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                            <div class="col-sm-6">
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label class="">Id compte Sharing-data *</label>
+                                {{ form_widget(edit_form.sharingData, { 'attr': {'class': 'form-control','name':'sharingData','placeholder':'Id compte Sharing-data'} }) }}
+                                {% for error in edit_form.sharingData.vars.errors %}
+                                    <span class="alert alert-danger-form">{{ error.message }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div>
+                            {% if(user.createdBy is not null) %} 
+                                Créé par : {{ user.createdBy.lastName }}  {{ user.createdBy.firstName }} 
+                            {% endif %}
+                            {% if(user.createdAt is not null) %} 
+                                le {{ user.createdAt | date('d/m/Y h:i') }} 
+                            {% endif %}
+                            <br>
+                            {% if(user.updatedAt is not null) %} 
+                                Mis à jour 
+                            {% endif %} 
+                            {% if(user.updatedBy is not null) %} 
+                                par : {{ user.updatedBy.lastName }} {{ user.updatedBy.firstName }} 
+                            {% endif %}  
+                            {% if(user.updatedAt is not null) %} 
+                                le {{ user.updatedAt | date('d/m/Y h:i') }} 
+                            {% endif %}
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fa fa-save"></i> Sauver
+                                </button>
+                                <a href="{{ path('user_index') }}" class="btn btn-default">
+                                    <i class="fa fa-arrow-left"></i> Fermer sans enregistrer
+                                </a>
+                            </div>
+                        </div> 
+                        {{ form_end(edit_form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--main content end-->     
+{% endblock %}

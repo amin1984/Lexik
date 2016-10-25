@@ -1,0 +1,149 @@
+{% extends 'SatisfactoryUserBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Main content view  -->
+    <div class="pageheader">
+        <h1>LISTE DES CLIENTS</h1>
+        {#<div class="breadcrumb-wrapper hidden-xs">
+            <span class="label">Vous êtes ici :</span>
+            <ol class="breadcrumb">
+                <li><a href="{{ path('user_index') }}">Clients</a>
+                </li>
+                <li class="active">Liste</li>
+            </ol>
+        </div>#}
+    </div>
+    <section ng-app="neuboard" ng-controller="UserCtrl" id="main-content" class="animated fadeInRight">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a href="{{ path('user_new') }}">
+                            <button  class="btn btn-primary btn-lg" data-toggle="modal" data-target="#formModal">
+                                <i class="fa fa-plus"></i> Créer un nouveau client
+                            </button>
+                        </a><br><br>
+                        <label class="col-md-12">Rechercher un client :</label>
+                        <div class="col-md-6">
+                            <input  type="text" class="form-control" ng-change="inputSearch()" ng-model="inputValue" >
+                        </div>
+                        <div class="col-md-12">
+                        </div>    
+                        <br><br> <br><br>
+                        <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                     <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('id')">
+                                            Id
+                                        </a>
+                                    </th>
+                                    <th>Client</th>
+                                    <th>Nombre de traitements liés</th>
+                                    <th>Nombre de correspondances liées</th>
+                                    <th>Nombre de filtrages client actifs</th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('creatorName')">
+                                            Créé par
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="" ng-init="countOrder=0"  ng-click="orderBy('updatedAt')">
+                                            Dernière mise à jour
+                                        </a>
+                                    </th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>   
+
+                            <tbody ng-repeat="user in users">
+                                <tr>
+                                    <td>{{ '{{ user.id }}'  }}</td>
+                                    <td>{{ '{{ user.username }}' }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ '{{ user.creatorName }}' }}</td>
+                                    <td>{{ '{{ user.updatedAt }}' }}</td>
+                                    <td>{{ '{{ user.dealing }}' }}
+                                        <a title="Editer" href="{{ '{{ user.pathEdit }}' }}">
+                                            <button  class="btn btn-default" type="button" >
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                        </a>    
+
+                                        <button title="Supprimer"  class="btn btn-default" type="button" data-target="#userDelete{{ '{{ user.id }}' }}" data-toggle="modal">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                        <!-- UserDelete Modal -->
+                                        <div  class="modal fade" id="userDelete{{ '{{ user.id }}' }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                        <h4 class="modal-title" id="myModalLabel"> Suppresion </h4>
+                                                    </div>
+                                                    <div class="modal-body-delete">
+                                                        <br>
+                                                        <div ng-if="user.dealings.length == 0 ">
+                                                            <div class="col-sm-12">
+                                                                Êtes-vous sûr de vouloir supprimer ce client ?
+                                                            </div>
+                                                            <br><br>
+                                                            <div class="col-sm-12">
+                                                                <a href="{{ '{{ user.pathDelete }}' }}">
+                                                                    <button  type="button" class="btn btn-primary" >Oui</button>
+                                                                </a>
+                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Non</button>
+                                                            </div>
+                                                        </div>       
+                                                        <div ng-if="user.dealings.length != 0 " class="col-sm-12">
+                                                            <strong>Cet utilisateur ne peut pas être supprimé!</strong> 
+                                                            <br><br>
+                                                            Traitements liés : 
+                                                            <div ng-repeat="dealing in user.dealings" >
+                                                                <a href="{{ '{{ user.pathDealing }}' }}" title="{{ '{{ dealing.name }}' }}"  data-id="1">
+                                                                {{ '{{ dealing.name }}' }} &nbsp; 
+                                                                </a>
+                                                            </div> 
+                                                        </div>     
+                                                        <br><br><br>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>        
+                                        <!-- End UserDelete Modal -->   
+                                    </td>
+                                </tr>
+                                {#{% endfor %} #} 
+                            </tbody>    
+                        </table>
+                        {# Display pagination #}           
+                        <div  class="pagination" ng-if="pages > 1">
+                            <span  ng-if="current != 1" class="previous" ng-click="selectedLastPage(current-1)">
+                                <a href="">&lt;&lt;</a>
+                            </span>
+                            <span ng-repeat="(key, page) in range(1,pages)"  ng-class="(page == current) ? 'current' : ''" ng-click="selectedPage(page)">
+                                <a href="">
+                                    {{ '{{ page }}' }} 
+                                </a>
+                            </span>
+
+                            <span ng-if="current != pages" class="next" ng-click="selectedNextPage(current+1)">
+                                <a href="">&gt;&gt;</a>
+                            </span> 
+                        </div>
+                        {# End display pagination #}
+                        <div ng-if="pages == 0">
+                            Aucun élément sélectionné
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'SatisfactoryUserBundle:js:user.js.twig'with {'url' : path('user_list_ajax')} %}
+{% endblock %}  

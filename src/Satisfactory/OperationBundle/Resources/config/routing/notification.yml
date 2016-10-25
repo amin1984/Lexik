@@ -1,0 +1,4 @@
+operation_notification_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "SatisfactoryOperationBundle:Notification:delete" }
+    methods:  GET

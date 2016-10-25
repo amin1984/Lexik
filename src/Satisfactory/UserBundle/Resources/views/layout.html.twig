@@ -1,0 +1,19 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <section  id="main-wrapper" class="theme-default" >
+        <!-- Page wrapper -->
+        <header id="header" ng-include="{{ include('::header.html.twig') }}"></header>
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar sidebar-left" ng-include="{{ include('::menu.html.twig') }}"></aside>
+        <!-- Content wraper -->
+        <section class="main-content-wrapper">
+            {% block content %}
+
+            {% endblock %} 
+            <!-- Footer -->
+            <div ng-include="'views/footer.html'"></div>
+        </section>
+        <!-- /Content wraper-->
+    </section>
+{% endblock %}
